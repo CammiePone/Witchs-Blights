@@ -1,0 +1,6 @@
+{
+	"type": "witchsblights:mistletoe",
+	"config": {
+		"valid_blocks": "witchsblights:valid_mistletoe_gen_blocks"
+	}
+}

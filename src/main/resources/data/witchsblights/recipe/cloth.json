@@ -1,0 +1,11 @@
+{
+	"type": "witchsblights:shearing_recipe",
+	"ingredients": [
+		{
+			"tag": "minecraft:wool"
+		}
+	],
+	"result": {
+		"id": "witchsblights:cloth"
+	}
+}

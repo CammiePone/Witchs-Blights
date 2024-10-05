@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"package": "dev.cammiescorner.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"AreaEffectCloudEntityMixin",
+		"EnchantmentMixin",
+		"LivingEntityMixin",
+		"MilkBucketItemMixin",
+		"MobEntityMixin",
+		"PotionContentsComponentMixin",
+		"PotionEntityMixin",
+		"RaiderEntityMixin",
+		"StatusEffectUtilMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

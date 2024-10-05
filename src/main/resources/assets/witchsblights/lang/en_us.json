@@ -1,0 +1,51 @@
+{
+	"item.minecraft.tipped_arrow.effect.sanguine_blight": "Arrow of The Blood",
+	"item.minecraft.tipped_arrow.effect.strong_sanguine_blight": "Arrow of The Blood",
+	"item.minecraft.tipped_arrow.effect.strongest_sanguine_blight": "Arrow of The Blood",
+	"item.minecraft.tipped_arrow.effect.cursed_claws": "Arrow of The Wolf",
+	"item.minecraft.tipped_arrow.effect.strong_cursed_claws": "Arrow of The Wolf",
+	"item.minecraft.tipped_arrow.effect.strongest_cursed_claws": "Arrow of The Wolf",
+	"item.minecraft.potion.effect.sanguine_blight": "Potion of The Blood",
+	"item.minecraft.potion.effect.strong_sanguine_blight": "Potion of The Blood",
+	"item.minecraft.potion.effect.strongest_sanguine_blight": "Potion of The Blood",
+	"item.minecraft.potion.effect.cursed_claws": "Potion of The Wolf",
+	"item.minecraft.potion.effect.strong_cursed_claws": "Potion of The Wolf",
+	"item.minecraft.potion.effect.strongest_cursed_claws": "Potion of The Wolf",
+	"item.minecraft.splash_potion.effect.sanguine_blight": "Splash Potion of The Blood",
+	"item.minecraft.splash_potion.effect.strong_sanguine_blight": "Splash Potion of The Blood",
+	"item.minecraft.splash_potion.effect.strongest_sanguine_blight": "Splash Potion of The Blood",
+	"item.minecraft.splash_potion.effect.cursed_claws": "Splash Potion of The Wolf",
+	"item.minecraft.splash_potion.effect.strong_cursed_claws": "Splash Potion of The Wolf",
+	"item.minecraft.splash_potion.effect.strongest_cursed_claws": "Splash Potion of The Wolf",
+	"item.minecraft.lingering_potion.effect.sanguine_blight": "Lingering Potion of The Blood",
+	"item.minecraft.lingering_potion.effect.strong_sanguine_blight": "Lingering Potion of The Blood",
+	"item.minecraft.lingering_potion.effect.strongest_sanguine_blight": "Lingering Potion of The Blood",
+	"item.minecraft.lingering_potion.effect.cursed_claws": "Lingering Potion of The Wolf",
+	"item.minecraft.lingering_potion.effect.strong_cursed_claws": "Lingering Potion of The Wolf",
+	"item.minecraft.lingering_potion.effect.strongest_cursed_claws": "Lingering Potion of The Wolf",
+
+	"item.witchsblights.rosary": "Rosary",
+	"item.witchsblights.cloth": "Cloth",
+	"item.witchsblights.bloodstained_cloth": "Bloodstained Cloth",
+	"item.witchsblights.mistletoe": "Mistletoe",
+	"item.witchsblights.bundled_mistletoe": "Bundled Mistletoe",
+	"item.witchsblights.vampire_beast_spawn_egg": "Vampire Beast Spawn Egg",
+
+	"block.witchsblights.mistletoe": "Mistletoe",
+	"block.witchsblights.bundled_mistletoe": "Bundled Mistletoe",
+
+	"entity.witchsblights.vampire_beast": "Vampire Beast",
+
+	"effect.witchsblights.sanguine_blight": "Sanguine Blight",
+	"effect.witchsblights.cursed_claws": "Cursed Claws",
+
+	"death.attack.blood_drained": "%1$s had their blood drained by a %2$s",
+	"death.attack.blood_drained.item": "%1$s had their blood drained by %2$s whilst wielding %3$s",
+	"death.attack.blood_drained.player": "%1$s had their blood drained by %2$s",
+
+	"duration_unit.witchsblights.seconds": "%s Seconds",
+	"duration_unit.witchsblights.minutes": "%s Minutes",
+	"duration_unit.witchsblights.days": "%s Days",
+	"duration_unit.witchsblights.weeks": "%s Weeks",
+	"duration_unit.witchsblights.months": "%s Months"
+}

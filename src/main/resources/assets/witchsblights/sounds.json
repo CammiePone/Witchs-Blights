@@ -1,0 +1,122 @@
+{
+	"entity.beasts.scratch": {
+		"subtitle": "subtitles.witchsblights.beasts.scratch",
+		"sounds": [
+			"witchsblights:entity/beasts/scratch_1",
+			"witchsblights:entity/beasts/scratch_2",
+			"witchsblights:entity/beasts/scratch_3"
+		]
+	},
+	"entity.beasts.step": {
+		"subtitle": "subtitles.witchsblights.beasts.step",
+		"sounds": [
+			"witchsblights:entity/beasts/step_1",
+			"witchsblights:entity/beasts/step_2",
+			"witchsblights:entity/beasts/step_3"
+		]
+	},
+	"entity.vampire_beast.attack": {
+		"subtitle": "subtitles.witchsblights.vampire_beast.attack",
+		"sounds": [
+			"witchsblights:entity/vampire_beast/attack_1",
+			"witchsblights:entity/vampire_beast/attack_2",
+			"witchsblights:entity/vampire_beast/attack_3"
+		]
+	},
+	"entity.vampire_beast.death": {
+		"subtitle": "subtitles.witchsblights.vampire_beast.death",
+		"sounds": [
+			"witchsblights:entity/vampire_beast/death_1",
+			"witchsblights:entity/vampire_beast/death_2",
+			"witchsblights:entity/vampire_beast/death_3"
+		]
+	},
+	"entity.vampire_beast.hurt": {
+		"subtitle": "subtitles.witchsblights.vampire_beast.hurt",
+		"sounds": [
+			"witchsblights:entity/vampire_beast/hurt_1",
+			"witchsblights:entity/vampire_beast/hurt_2",
+			"witchsblights:entity/vampire_beast/hurt_3"
+		]
+	},
+	"entity.vampire_beast.idle": {
+		"subtitle": "subtitles.witchsblights.vampire_beast.idle",
+		"sounds": [
+			"witchsblights:entity/vampire_beast/idle_1",
+			"witchsblights:entity/vampire_beast/idle_2",
+			"witchsblights:entity/vampire_beast/idle_3"
+		]
+	},
+	"entity.vampire_beast.scream": {
+		"subtitle": "subtitles.witchsblights.vampire_beast.scream",
+		"sounds": [
+			"witchsblights:entity/vampire_beast/scream_1",
+			"witchsblights:entity/vampire_beast/scream_2",
+			"witchsblights:entity/vampire_beast/scream_3"
+		]
+	},
+	"entity.vampire_beast.drink_blood": {
+		"subtitle": "subtitles.witchsblights.vampire_beast.drink_blood",
+		"sounds": [
+			"minecraft:item/bottle/drink_honey1",
+			"minecraft:item/bottle/drink_honey2",
+			{
+				"name": "minecraft:item/bottle/drink_honey3",
+				"volume": 0.35
+			},
+			{
+				"name": "minecraft:item/bottle/drink_honey3",
+				"volume": 0.75
+			}
+		]
+	},
+	"entity.vampire_beast.wings": {
+		"subtitle": "subtitles.witchsblights.vampire_beast.wings",
+		"sounds": [
+			"witchsblights:entity/vampire_beast/wings_1",
+			"witchsblights:entity/vampire_beast/wings_2",
+			"witchsblights:entity/vampire_beast/wings_3"
+		]
+	},
+	"entity.werewolf.attack": {
+		"subtitle": "subtitles.witchsblights.werewolf.attack",
+		"sounds": [
+			"witchsblights:entity/werewolf/attack_1",
+			"witchsblights:entity/werewolf/attack_2",
+			"witchsblights:entity/werewolf/attack_3",
+			"witchsblights:entity/werewolf/attack_4"
+		]
+	},
+	"entity.werewolf.death": {
+		"subtitle": "subtitles.witchsblights.werewolf.death",
+		"sounds": [
+			"witchsblights:entity/werewolf/death_1",
+			"witchsblights:entity/werewolf/death_2"
+		]
+	},
+	"entity.werewolf.hurt": {
+		"subtitle": "subtitles.witchsblights.werewolf.hurt",
+		"sounds": [
+			"witchsblights:entity/werewolf/hurt_1",
+			"witchsblights:entity/werewolf/hurt_2",
+			"witchsblights:entity/werewolf/hurt_3"
+		]
+	},
+	"entity.werewolf.idle": {
+		"subtitle": "subtitles.witchsblights.werewolf.idle",
+		"sounds": [
+			"witchsblights:entity/werewolf/idle_1",
+			"witchsblights:entity/werewolf/idle_2",
+			"witchsblights:entity/werewolf/idle_3",
+			"witchsblights:entity/werewolf/idle_4"
+		]
+	},
+	"entity.werewolf.scream": {
+		"subtitle": "subtitles.witchsblights.werewolf.scream",
+		"sounds": [
+			"witchsblights:entity/werewolf/scream_1",
+			"witchsblights:entity/werewolf/scream_2",
+			"witchsblights:entity/werewolf/scream_3"
+		]
+	}
+}

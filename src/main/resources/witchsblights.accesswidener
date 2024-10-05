@@ -1,0 +1,11 @@
+accessWidener v2 named
+
+accessible field net/minecraft/recipe/ShapelessRecipe result Lnet/minecraft/item/ItemStack;
+accessible field net/minecraft/entity/ai/goal/ActiveTargetGoal targetPredicate Lnet/minecraft/entity/ai/TargetPredicate;
+accessible field net/minecraft/registry/entry/RegistryEntry$Reference referenceType Lnet/minecraft/registry/entry/RegistryEntry$Reference$Type;
+accessible field net/minecraft/registry/entry/RegistryEntry$Reference value Ljava/lang/Object;
+
+accessible method net/minecraft/entity/LivingEntity modifyAppliedDamage (Lnet/minecraft/entity/damage/DamageSource;F)F
+accessible method net/minecraft/entity/LivingEntity applyArmorToDamage (Lnet/minecraft/entity/damage/DamageSource;F)F
+accessible method net/minecraft/registry/entry/RegistryEntry$Reference setValue (Ljava/lang/Object;)V
+accessible method net/minecraft/entity/mob/MobEntity resetSoundDelay ()V
