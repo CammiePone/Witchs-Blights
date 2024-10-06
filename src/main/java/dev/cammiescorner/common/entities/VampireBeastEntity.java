@@ -8,10 +8,7 @@ import dev.cammiescorner.common.registries.ModStatusEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
@@ -45,7 +42,7 @@ public class VampireBeastEntity extends HostileEntity {
 	public static final TrackedData<Boolean> HUNTING = DataTracker.registerData(VampireBeastEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 	public static final TrackedData<Integer> ATTACK_COOLDOWN = DataTracker.registerData(VampireBeastEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	public FlightMoveControl flightMoveControl;
-	public int targetUnreachableTimer = 0;
+	public int targetUnreachableTimer;
 
 	public VampireBeastEntity(EntityType<? extends HostileEntity> entityType, World world) {
 		super(entityType, world);
@@ -55,7 +52,7 @@ public class VampireBeastEntity extends HostileEntity {
 	public static DefaultAttributeContainer.Builder createVampireBeastAttributes() {
 		return HostileEntity.createHostileAttributes()
 				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 100)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
+				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, 40);
 	}
@@ -86,15 +83,32 @@ public class VampireBeastEntity extends HostileEntity {
 	}
 
 	@Override
+	protected float getBaseMovementSpeedMultiplier() {
+		return getTarget() != null && getTarget().isSprinting() ? 2f : 1f;
+	}
+
+	@Override
+	public float getMovementSpeed() {
+		return super.getMovementSpeed() * getBaseMovementSpeedMultiplier();
+	}
+
+	@Override
 	public void tickMovement() {
 		super.tickMovement();
 
-		boolean shouldSneak = !getWorld().isBlockSpaceEmpty(this, new Box(-0.3, 1.95, -0.3, 0.3, 2.7, 0.3).offset(getPos()));
+		if(!getWorld().isClient()) {
+			boolean shouldSneak = getTarget() != null && !getWorld().isSpaceEmpty(getTarget(), Box.of(getTarget().getEyePos().add(0, 0.5, 0), getTarget().getWidth(), 1, getTarget().getWidth()));
 
-		if(isSneaking() != shouldSneak) {
-			setSneaking(shouldSneak);
-			setPose(shouldSneak ? EntityPose.CROUCHING : EntityPose.STANDING);
+			if(isSneaking() != shouldSneak && canChangeIntoPose(isSneaking() ? EntityPose.STANDING : EntityPose.CROUCHING)) {
+				setSneaking(shouldSneak);
+				setPose(isSneaking() ? EntityPose.CROUCHING : EntityPose.STANDING);
+			}
 		}
+	}
+
+	@Override
+	protected EntityDimensions getBaseDimensions(EntityPose pose) {
+		return pose == EntityPose.STANDING ? EntityDimensions.changing(0.6f, 2.7f).withEyeHeight(2.35f) : EntityDimensions.changing(0.6f, 1.9f).withEyeHeight(1.75f);
 	}
 
 	@Override
@@ -170,6 +184,10 @@ public class VampireBeastEntity extends HostileEntity {
 		return super.canTarget(target) && isVisible && shouldTarget;
 	}
 
+	protected boolean canChangeIntoPose(EntityPose pose) {
+		return getWorld().isSpaceEmpty(this, getBaseDimensions(pose).getBoxAt(getPos()).contract(1.0E-7));
+	}
+
 	public boolean isWeakTo(DamageSource source) {
 		return source.getSource() instanceof VampireBeastEntity || source.isIn(DamageTypeTags.IS_FIRE) || source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) || (source.getWeaponStack() != null && EnchantmentHelper.getLevel(Utils.registryEntry(Enchantments.SMITE, getWorld()), source.getWeaponStack()) > 0);
 	}
@@ -188,7 +206,7 @@ public class VampireBeastEntity extends HostileEntity {
 			if(pathNode == null)
 				return false;
 			else
-				return pathNode.getSquaredDistance(target.getBlockPos()) <= 2.25;
+				return pathNode.getSquaredDistance(target.getBlockPos()) <= 1f;
 		}
 	}
 
@@ -258,12 +276,13 @@ public class VampireBeastEntity extends HostileEntity {
 				float angleBetweenXZ = (float) MathHelper.atan2(distanceZ, distanceX);
 				float wrappedYaw = MathHelper.wrapDegrees(VampireBeastEntity.this.getYaw() + 90f);
 				float wrappedAngleBetweenXZ = MathHelper.wrapDegrees(angleBetweenXZ * 60f);
+				float speedMultiplier = getTarget() != null && getTarget().isFallFlying() ? 1f : 0.25f;
 
 				VampireBeastEntity.this.setYaw(MathHelper.stepUnwrappedAngleTowards(wrappedYaw, wrappedAngleBetweenXZ, 4f) - 90f);
 				VampireBeastEntity.this.bodyYaw = VampireBeastEntity.this.getYaw();
 
 				if(MathHelper.angleBetween(yaw, VampireBeastEntity.this.getYaw()) < 3f)
-					targetSpeed = MathHelper.stepTowards(targetSpeed, 4f, 0.1f * (3f / targetSpeed));
+					targetSpeed = MathHelper.stepTowards(targetSpeed, 4f * speedMultiplier, 0.1f * ((2f * speedMultiplier) / targetSpeed));
 				else
 					targetSpeed = MathHelper.stepTowards(targetSpeed, 0.2f, 0.05f);
 

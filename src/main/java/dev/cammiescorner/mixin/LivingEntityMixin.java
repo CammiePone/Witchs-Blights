@@ -17,6 +17,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -58,7 +59,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 	@Inject(method = "onStatusEffectRemoved", at = @At("HEAD"))
 	private void witchsblights$removeTransformation(StatusEffectInstance effect, CallbackInfo info) {
-		if(self instanceof PlayerEntity player && effect.getEffectType().value() instanceof CursedStatusEffect) {
+		if(self instanceof ServerPlayerEntity player && effect.getEffectType().value() instanceof CursedStatusEffect) {
 			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 			component.getTransformation().untransform(player);

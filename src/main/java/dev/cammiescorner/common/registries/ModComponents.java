@@ -1,12 +1,14 @@
 package dev.cammiescorner.common.registries;
 
 import dev.cammiescorner.WitchsBlights;
+import dev.cammiescorner.common.components.client.ClientTransformationComponent;
 import dev.cammiescorner.common.components.*;
 import dev.cammiescorner.common.entities.VampireBeastEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.ladysnake.cca.api.v3.component.Component;
 import org.ladysnake.cca.api.v3.component.ComponentKey;
 import org.ladysnake.cca.api.v3.component.ComponentRegistry;
@@ -29,7 +31,7 @@ public class ModComponents implements EntityComponentInitializer {
 		registry.beginRegistration(MerchantEntity.class, BLOOD).end(BloodComponent::new);
 		registry.beginRegistration(IllagerEntity.class, BLOOD).end(BloodComponent::new);
 		registry.beginRegistration(VampireBeastEntity.class, SPECIAL_BEAST_MOVEMENT).end(BeastMovementComponent::new);
-		registry.registerForPlayers(TRANSFORMATION, TransformationComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
+		registry.registerForPlayers(TRANSFORMATION, player -> player instanceof ServerPlayerEntity ? new TransformationComponent(player) : new ClientTransformationComponent(player), RespawnCopyStrategy.ALWAYS_COPY);
 	}
 
 	private static <T extends Component> ComponentKey<T> createComponent(String name, Class<T> component) {
