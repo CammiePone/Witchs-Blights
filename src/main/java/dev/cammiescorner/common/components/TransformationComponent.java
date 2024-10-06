@@ -68,7 +68,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 					else if(noTargetTimer-- <= 0)
 						transformation.untransform(serverPlayer);
 				}
-				else if(getUrgingProgress() < 1)
+				else
 					transformation.untransform(serverPlayer);
 			}
 		}

@@ -67,10 +67,9 @@ public class Transformation {
 		TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 		if(beast != null) {
-			beast.refreshPositionAndAngles(player.getPos(), player.getHeadYaw(), player.getPitch());
+			beast.refreshPositionAndAngles(player.getPos(), player.getYaw(), player.getPitch());
 			beast.setTarget(target);
 			world.spawnEntity(beast);
-
 
 			player.setCameraEntity(beast);
 			component.setNoTargetTimer(100);
