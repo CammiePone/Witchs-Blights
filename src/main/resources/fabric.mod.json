@@ -33,7 +33,7 @@
 	"custom": {
 		"cardinal-components": [
 			"witchsblights:visible_to_supernatural",
-			"witchsblights:incurable_effects",
+			"witchsblights:respawnable_effects",
 			"witchsblights:blood",
 			"witchsblights:special_beast_movement",
 			"witchsblights:transformation"

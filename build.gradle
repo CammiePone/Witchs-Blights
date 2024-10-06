@@ -18,6 +18,9 @@ repositories {
 	maven {
 		url = "https://maven.uuid.gg/releases"
 	}
+	maven {
+		url = "https://nexus.resourcefulbees.com/repository/maven-public/"
+	}
 }
 
 dependencies {
@@ -31,6 +34,7 @@ dependencies {
 	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
 	modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 	modImplementation "dev.upcraft.sparkweave:Sparkweave-Fabric:${project.sparkweave_version}"
+	modImplementation "com.teamresourceful.resourcefulconfig:resourcefulconfig-fabric-1.21:${project.resourceful_config_version}"
 }
 
 loom {

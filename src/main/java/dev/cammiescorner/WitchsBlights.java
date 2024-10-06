@@ -1,8 +1,9 @@
 package dev.cammiescorner;
 
+import com.teamresourceful.resourcefulconfig.api.loader.Configurator;
 import dev.cammiescorner.api.Transformation;
 import dev.cammiescorner.common.Utils;
-import dev.cammiescorner.common.components.IncurableEffectsComponent;
+import dev.cammiescorner.common.components.RespawnableEffectsComponent;
 import dev.cammiescorner.common.entities.VampireBeastEntity;
 import dev.cammiescorner.common.registries.*;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
@@ -37,8 +38,11 @@ public class WitchsBlights implements ModInitializer {
 	public static final RegistryKey<Registry<Transformation>> TRANSFORMATIONS_KEY = RegistryKey.ofRegistry(id("transformation"));
 	public static final DefaultedRegistry<Transformation> TRANSFORMATIONS = FabricRegistryBuilder.createDefaulted(TRANSFORMATIONS_KEY, id("none")).buildAndRegister();
 
+	public static final Configurator CONFIGURATOR = new Configurator(MOD_ID);
+
 	@Override
 	public void onInitialize() {
+		CONFIGURATOR.register(WitchsBlightsConfig.class);
 		RegistryService registryService = RegistryService.get();
 
 		ModComponentTypes.COMPONENTS.accept(registryService);
@@ -69,7 +73,7 @@ public class WitchsBlights implements ModInitializer {
 				entity.addStatusEffect(Utils.SANGUINE_BLIGHT_I);
 
 			if(entity instanceof ServerPlayerEntity player) {
-				IncurableEffectsComponent incurableEffectsComponent = player.getComponent(ModComponents.INCURABLE_EFFECTS);
+				RespawnableEffectsComponent incurableEffectsComponent = player.getComponent(ModComponents.RESPAWNABLE_EFFECTS);
 
 				incurableEffectsComponent.clearStatusEffects();
 
@@ -80,7 +84,7 @@ public class WitchsBlights implements ModInitializer {
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			if(!alive) {
-				IncurableEffectsComponent incurableEffectsComponent = newPlayer.getComponent(ModComponents.INCURABLE_EFFECTS);
+				RespawnableEffectsComponent incurableEffectsComponent = newPlayer.getComponent(ModComponents.RESPAWNABLE_EFFECTS);
 
 				for(StatusEffectInstance statusEffect : incurableEffectsComponent.getEffects())
 					newPlayer.addStatusEffect(statusEffect);

@@ -1,13 +1,13 @@
 package dev.cammiescorner.api;
 
 import dev.cammiescorner.common.components.TransformationComponent;
+import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModTransformations;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -18,13 +18,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class Transformation {
 	private final RegistryEntry<Potion> curse;
-	private final EntityType<? extends HostileEntity> beast;
+	private final EntityType<? extends BeastEntity> beast;
 	private final TagKey<EntityType<?>> targets;
 	private final int baseUrgingTicks;
 	private final double baseStageUrgingModifier;
 	private final double baseBabyUrgingModifier;
 
-	public Transformation(RegistryEntry<Potion> curse, EntityType<? extends HostileEntity> beast, TagKey<EntityType<?>> targets, int baseUrgingTicks, double baseStageUrgingModifier, double baseBabyUrgingModifier) {
+	public Transformation(RegistryEntry<Potion> curse, EntityType<? extends BeastEntity> beast, TagKey<EntityType<?>> targets, int baseUrgingTicks, double baseStageUrgingModifier, double baseBabyUrgingModifier) {
 		this.curse = curse;
 		this.beast = beast;
 		this.targets = targets;
@@ -63,7 +63,7 @@ public class Transformation {
 
 	public void transform(ServerPlayerEntity player, LivingEntity target) {
 		World world = player.getWorld();
-		HostileEntity beast = getBeast().create(world);
+		BeastEntity beast = getBeast().create(world);
 		TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 		if(beast != null) {
@@ -90,7 +90,7 @@ public class Transformation {
 		return curse;
 	}
 
-	public EntityType<? extends HostileEntity> getBeast() {
+	public EntityType<? extends BeastEntity> getBeast() {
 		return beast;
 	}
 

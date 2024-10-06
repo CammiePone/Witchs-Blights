@@ -47,5 +47,16 @@
 	"duration_unit.witchsblights.minutes": "%s Minutes",
 	"duration_unit.witchsblights.days": "%s Days",
 	"duration_unit.witchsblights.weeks": "%s Weeks",
-	"duration_unit.witchsblights.months": "%s Months"
+	"duration_unit.witchsblights.months": "%s Months",
+
+	"witchsblights.config.untransformIfNoTargetTicks.name": "Ticks until player should untransform",
+	"witchsblights.config.urgingLookStrength.name": "Strength of urging rotating camera",
+	"witchsblights.config.baseVampireUrgingTicks.name": "Base vampire urging timer",
+	"witchsblights.config.baseVampireStageUrgingModifier.name": "Vampire urging timer modifier based on effect stage",
+	"witchsblights.config.baseVampireBabyUrgingModifier.name": "Vampire urging timer modifier if target is baby",
+	"witchsblights.config.vampireUrgingRange.name": "Vampire urging range",
+	"witchsblights.config.baseWerewolfUrgingTicks.name": "Base werewolf urging timer",
+	"witchsblights.config.baseWerewolfStageUrgingModifier.name": "Werewolf urging timer modifier based on effect stage",
+	"witchsblights.config.baseWerewolfBabyUrgingModifier.name": "Werewolf urging timer modifier if target is baby",
+	"witchsblights.config.werewolfUrgingRange.name": "Werewolf urging range"
 }

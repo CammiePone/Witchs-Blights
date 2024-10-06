@@ -1,6 +1,7 @@
 package dev.cammiescorner.common.components;
 
 import dev.cammiescorner.WitchsBlights;
+import dev.cammiescorner.WitchsBlightsConfig;
 import dev.cammiescorner.api.Transformation;
 import dev.cammiescorner.common.Utils;
 import dev.cammiescorner.common.registries.ModComponents;
@@ -15,7 +16,9 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +30,7 @@ import java.util.UUID;
 
 public class TransformationComponent implements AutoSyncedComponent, ServerTickingComponent {
 	protected final PlayerEntity player;
+	protected Box urgingBox = new Box(-WitchsBlightsConfig.vampireUrgingRange, -WitchsBlightsConfig.vampireUrgingRange, -WitchsBlightsConfig.vampireUrgingRange, WitchsBlightsConfig.vampireUrgingRange, WitchsBlightsConfig.vampireUrgingRange, WitchsBlightsConfig.vampireUrgingRange);
 	protected Transformation transformation = ModTransformations.NONE.get();
 	protected UUID targetId = Utils.NIL_UUID;
 	protected boolean isUrging;
@@ -44,7 +48,8 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 			HostileEntity thaBeast = serverPlayer.getCameraEntity() instanceof HostileEntity beast ? beast : null;
 
 			if(!isTransformed && world.getDifficulty() != Difficulty.PEACEFUL) {
-				List<Entity> targets = world.getOtherEntities(player, player.getBoundingBox().expand(16), entity -> entity instanceof LivingEntity && entity.getType().isIn(transformation.getTargets())).stream().sorted((o1, o2) -> Double.compare(o1.squaredDistanceTo(player), o2.squaredDistanceTo(player))).toList();
+				Vec3d offset = player.getPos().add(0, player.getHeight() * 0.5, 0);
+				List<Entity> targets = world.getOtherEntities(player, urgingBox.offset(offset), entity -> entity instanceof LivingEntity && entity.getType().isIn(transformation.getTargets()) && entity.distanceTo(player) <= WitchsBlightsConfig.vampireUrgingRange).stream().sorted((o1, o2) -> Double.compare(o1.squaredDistanceTo(player), o2.squaredDistanceTo(player))).toList();
 
 				if(targets.isEmpty() && isUrging)
 					stopUrging();
@@ -64,7 +69,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 					}
 
 					if(thaBeast.getTarget() != null)
-						noTargetTimer = 100;
+						noTargetTimer = WitchsBlightsConfig.untransformIfNoTargetTicks;
 					else if(noTargetTimer-- <= 0)
 						transformation.untransform(serverPlayer);
 				}

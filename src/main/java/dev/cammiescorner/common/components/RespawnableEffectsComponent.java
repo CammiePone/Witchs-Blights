@@ -13,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class IncurableEffectsComponent implements Component {
+public class RespawnableEffectsComponent implements Component {
 	private final PlayerEntity player;
 	private final List<StatusEffectInstance> effects = new ArrayList<>();
 
-	public IncurableEffectsComponent(PlayerEntity player) {
+	public RespawnableEffectsComponent(PlayerEntity player) {
 		this.player = player;
 	}
 

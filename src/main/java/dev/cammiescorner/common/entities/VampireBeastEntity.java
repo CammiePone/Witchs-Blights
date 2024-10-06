@@ -5,7 +5,6 @@ import dev.cammiescorner.common.entities.ai.VampireDrinkAndAttackGoal;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModSoundEvents;
 import dev.cammiescorner.common.registries.ModStatusEffects;
-import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
@@ -19,18 +18,12 @@ import net.minecraft.entity.ai.pathing.PathNode;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -38,23 +31,17 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class VampireBeastEntity extends HostileEntity {
-	public static final TrackedData<Boolean> HUNTING = DataTracker.registerData(VampireBeastEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
-	public static final TrackedData<Integer> ATTACK_COOLDOWN = DataTracker.registerData(VampireBeastEntity.class, TrackedDataHandlerRegistry.INTEGER);
+public class VampireBeastEntity extends BeastEntity {
 	public FlightMoveControl flightMoveControl;
 	public int targetUnreachableTimer;
 
-	public VampireBeastEntity(EntityType<? extends HostileEntity> entityType, World world) {
+	public VampireBeastEntity(EntityType<? extends BeastEntity> entityType, World world) {
 		super(entityType, world);
 		this.flightMoveControl = new FlightMoveControl(this);
 	}
 
 	public static DefaultAttributeContainer.Builder createVampireBeastAttributes() {
-		return HostileEntity.createHostileAttributes()
-				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 100)
-				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15)
-				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6)
-				.add(EntityAttributes.GENERIC_MAX_HEALTH, 40);
+		return BeastEntity.createBeastAttributes().add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 6);
 	}
 
 	@Override
@@ -66,30 +53,6 @@ public class VampireBeastEntity extends HostileEntity {
 		targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, false, entity -> !entity.hasStatusEffect(ModStatusEffects.SANGUINE_BLIGHT.holder()) || entity.equals(getAttacker())));
 		targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
 		targetSelector.add(3, new ActiveTargetGoal<>(this, IllagerEntity.class, false));
-	}
-
-	@Override
-	protected void initDataTracker(DataTracker.Builder builder) {
-		super.initDataTracker(builder);
-		builder.add(HUNTING, false);
-		builder.add(ATTACK_COOLDOWN, 0);
-	}
-
-	@Override
-	protected void mobTick() {
-		super.mobTick();
-
-		dataTracker.set(HUNTING, getTarget() != null && getTarget().isAlive());
-	}
-
-	@Override
-	protected float getBaseMovementSpeedMultiplier() {
-		return getTarget() != null && getTarget().isSprinting() ? 2f : 1f;
-	}
-
-	@Override
-	public float getMovementSpeed() {
-		return super.getMovementSpeed() * getBaseMovementSpeedMultiplier();
 	}
 
 	@Override
@@ -112,13 +75,6 @@ public class VampireBeastEntity extends HostileEntity {
 	}
 
 	@Override
-	protected void playStepSound(BlockPos pos, BlockState state) {
-		super.playStepSound(pos, state);
-		BlockSoundGroup blockSoundGroup = state.getSoundGroup();
-		playSound(ModSoundEvents.BEAST_STEP.get(), blockSoundGroup.getVolume() * 0.15f, blockSoundGroup.getPitch());
-	}
-
-	@Override
 	protected @Nullable SoundEvent getAmbientSound() {
 		return ModSoundEvents.VAMPIRE_IDLE.get();
 	}
@@ -134,35 +90,13 @@ public class VampireBeastEntity extends HostileEntity {
 	}
 
 	@Override
-	protected void playHurtSound(DamageSource damageSource) {
-		super.playHurtSound(damageSource);
+	public SoundEvent getAttackSound() {
+		return ModSoundEvents.VAMPIRE_ATTACK.get();
 	}
 
 	@Override
-	protected void playAttackSound() {
-		resetSoundDelay();
-		playSound(ModSoundEvents.VAMPIRE_ATTACK.get(), 0.5f, getSoundPitch());
-	}
-
-	@Override
-	public void setTarget(@Nullable LivingEntity target) {
-		super.setTarget(target);
-
-		if(target != null && !target.equals(getTarget()))
-			playSound(ModSoundEvents.VAMPIRE_SCREAM.get());
-	}
-
-	@Override
-	public boolean tryAttack(Entity target) {
-		DamageSource source = getDamageSources().mobAttack(this);
-		boolean succeeds = super.tryAttack(target);
-
-		if(target instanceof LivingEntity livingTarget && succeeds) {
-			heal(livingTarget.modifyAppliedDamage(source, livingTarget.applyArmorToDamage(source, (float) getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE))));
-			livingTarget.playSound(ModSoundEvents.BEAST_SCRATCH.get());
-		}
-
-		return succeeds;
+	public SoundEvent getFoundTargetSound() {
+		return ModSoundEvents.VAMPIRE_SCREAM.get();
 	}
 
 	@Override
@@ -182,6 +116,12 @@ public class VampireBeastEntity extends HostileEntity {
 		boolean shouldTarget = (target.getComponent(ModComponents.BLOOD).getBlood() > 0 || target.equals(getAttacker()));
 
 		return super.canTarget(target) && isVisible && shouldTarget;
+	}
+
+	@Override
+	public void addExtraAttackEffects(LivingEntity target) {
+		DamageSource source = getDamageSources().mobAttack(this);
+		heal(target.modifyAppliedDamage(source, target.applyArmorToDamage(source, (float) getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE))));
 	}
 
 	protected boolean canChangeIntoPose(EntityPose pose) {
@@ -216,18 +156,6 @@ public class VampireBeastEntity extends HostileEntity {
 
 	public boolean isFlying() {
 		return getComponent(ModComponents.SPECIAL_BEAST_MOVEMENT).isUsingSpecialMovement() && !isOnGround();
-	}
-
-	public boolean isHunting() {
-		return dataTracker.get(HUNTING);
-	}
-
-	public int getAttackCooldown() {
-		return dataTracker.get(ATTACK_COOLDOWN);
-	}
-
-	public void setAttackCooldown(int cooldown) {
-		dataTracker.set(ATTACK_COOLDOWN, cooldown);
 	}
 
 	public int getTargetOutOfReachTimer() {

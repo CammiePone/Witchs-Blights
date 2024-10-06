@@ -18,7 +18,7 @@ import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 
 public class ModComponents implements EntityComponentInitializer {
 	public static final ComponentKey<VisibleToSupernaturalComponent> VISIBLE_TO_SUPERNATURAL = createComponent("visible_to_supernatural", VisibleToSupernaturalComponent.class);
-	public static final ComponentKey<IncurableEffectsComponent> INCURABLE_EFFECTS = createComponent("incurable_effects", IncurableEffectsComponent.class);
+	public static final ComponentKey<RespawnableEffectsComponent> RESPAWNABLE_EFFECTS = createComponent("respawnable_effects", RespawnableEffectsComponent.class);
 	public static final ComponentKey<BloodComponent> BLOOD = createComponent("blood", BloodComponent.class);
 	public static final ComponentKey<BeastMovementComponent> SPECIAL_BEAST_MOVEMENT = createComponent("special_beast_movement", BeastMovementComponent.class);
 	public static final ComponentKey<TransformationComponent> TRANSFORMATION = createComponent("transformation", TransformationComponent.class);
@@ -26,7 +26,7 @@ public class ModComponents implements EntityComponentInitializer {
 	@Override
 	public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
 		registry.beginRegistration(LivingEntity.class, VISIBLE_TO_SUPERNATURAL).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(VisibleToSupernaturalComponent::new);
-		registry.registerForPlayers(INCURABLE_EFFECTS, IncurableEffectsComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
+		registry.registerForPlayers(RESPAWNABLE_EFFECTS, RespawnableEffectsComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
 		registry.beginRegistration(PlayerEntity.class, BLOOD).respawnStrategy(RespawnCopyStrategy.NEVER_COPY).end(BloodComponent::new);
 		registry.beginRegistration(MerchantEntity.class, BLOOD).end(BloodComponent::new);
 		registry.beginRegistration(IllagerEntity.class, BLOOD).end(BloodComponent::new);

@@ -1,5 +1,6 @@
 package dev.cammiescorner.client;
 
+import dev.cammiescorner.WitchsBlightsConfig;
 import dev.cammiescorner.client.models.VampireBeastEntityModel;
 import dev.cammiescorner.client.renderers.VampireBeastEntityRenderer;
 import dev.cammiescorner.common.components.TransformationComponent;
@@ -33,8 +34,9 @@ public class WitchsBlightsClient implements ClientModInitializer {
 		HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
 			PlayerEntity player = client.player;
 			float tickDelta = tickCounter.getTickDelta(false);
+			float urgingLookStrength = WitchsBlightsConfig.urgingLookStrength;
 
-			if(player != null) {
+			if(urgingLookStrength > 0 && player != null) {
 				TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 				if(!component.isTransformed()) {
@@ -55,7 +57,7 @@ public class WitchsBlightsClient implements ClientModInitializer {
 								MathHelper.wrapDegrees(desiredYaw - currentYaw)
 						);
 
-						Vec2f rotationStep = rotationChange.normalize().multiply(component.getUrgingProgress() * 10f * (MathHelper.clamp(rotationChange.length(), 0, 10) / 10f));
+						Vec2f rotationStep = rotationChange.normalize().multiply(component.getUrgingProgress() * 10f * (MathHelper.clamp(rotationChange.length(), 0, 10) / 10f) * urgingLookStrength);
 
 						player.setPitch(player.getPitch(tickDelta) + rotationStep.x);
 						player.setYaw(player.getYaw(tickDelta) + rotationStep.y);
