@@ -141,22 +141,22 @@ public class ModConfig {
 				id = "baseWerewolfUrgingTicks",
 				translation = "witchsblights.config.baseWerewolfUrgingTicks.name"
 		)
-		public static int baseWerewolfUrgingTicks = 400;
+		public static int baseWerewolfUrgingTicks = 300;
 
 		@ConfigEntry(
 				type = EntryType.DOUBLE,
 				id = "baseWerewolfStageUrgingModifier",
 				translation = "witchsblights.config.baseWerewolfStageUrgingModifier.name"
 		)
-		public static double baseWerewolfStageUrgingModifier = 0.25;
+		public static double baseWerewolfStageUrgingModifier = 0.33;
 
 		@ConfigEntry(
 				type = EntryType.DOUBLE,
 				id = "baseWerewolfBabyUrgingModifier",
 				translation = "witchsblights.config.baseWerewolfBabyUrgingModifier.name"
 		)
-		public static double baseWerewolfBabyUrgingModifier = 0.5;
-		
+		public static double baseWerewolfBabyUrgingModifier = 0.33;
+
 		@ConfigEntry(
 				type = EntryType.DOUBLE,
 				id = "werewolfUrgingRange",
@@ -164,5 +164,4 @@ public class ModConfig {
 		)
 		public static double werewolfUrgingRange = 8;
 	}
-
 }
