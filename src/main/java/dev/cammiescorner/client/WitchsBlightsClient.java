@@ -1,6 +1,6 @@
 package dev.cammiescorner.client;
 
-import dev.cammiescorner.WitchsBlightsConfig;
+import dev.cammiescorner.ModConfig;
 import dev.cammiescorner.client.models.VampireBeastEntityModel;
 import dev.cammiescorner.client.renderers.VampireBeastEntityRenderer;
 import dev.cammiescorner.common.components.TransformationComponent;
@@ -34,7 +34,7 @@ public class WitchsBlightsClient implements ClientModInitializer {
 		HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
 			PlayerEntity player = client.player;
 			float tickDelta = tickCounter.getTickDelta(false);
-			float urgingLookStrength = WitchsBlightsConfig.urgingLookStrength;
+			float urgingLookStrength = ModConfig.AllBeasts.urgingLookStrength;
 
 			if(urgingLookStrength > 0 && player != null) {
 				TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);

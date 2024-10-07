@@ -1,6 +1,7 @@
 package dev.cammiescorner.common;
 
 import dev.cammiescorner.WitchsBlights;
+import dev.cammiescorner.ModConfig;
 import dev.cammiescorner.common.registries.ModStatusEffects;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,12 +20,12 @@ import java.util.UUID;
 
 public class Utils {
 	public static final UUID NIL_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
-	public static final StatusEffectInstance SANGUINE_BLIGHT_I = new StatusEffectInstance(ModStatusEffects.SANGUINE_BLIGHT.holder(), 7 * Utils.DurationUnits.DAYS.getMultiplier(), 0, true, false, true);
-	public static final StatusEffectInstance SANGUINE_BLIGHT_II = new StatusEffectInstance(ModStatusEffects.SANGUINE_BLIGHT.holder(), 7 * Utils.DurationUnits.WEEKS.getMultiplier(), 1, true, false, true);
-	public static final StatusEffectInstance SANGUINE_BLIGHT_III = new StatusEffectInstance(ModStatusEffects.SANGUINE_BLIGHT.holder(), 7 * Utils.DurationUnits.MONTHS.getMultiplier(), 2, true, false, true);
-	public static final StatusEffectInstance CURSED_CLAWS_I = new StatusEffectInstance(ModStatusEffects.CURSED_CLAWS.holder(), 7 * Utils.DurationUnits.DAYS.getMultiplier(), 0, true, false, true);
-	public static final StatusEffectInstance CURSED_CLAWS_II = new StatusEffectInstance(ModStatusEffects.CURSED_CLAWS.holder(), 7 * Utils.DurationUnits.WEEKS.getMultiplier(), 1, true, false, true);
-	public static final StatusEffectInstance CURSED_CLAWS_III = new StatusEffectInstance(ModStatusEffects.CURSED_CLAWS.holder(), 7 * Utils.DurationUnits.MONTHS.getMultiplier(), 2, true, false, true);
+	public static final StatusEffectInstance SANGUINE_BLIGHT_I = new StatusEffectInstance(ModStatusEffects.SANGUINE_BLIGHT.holder(), ModConfig.Curses.stageOneCurseDuration * ModConfig.Curses.stageOneCurseUnit.getMultiplier(), 0, true, false, true);
+	public static final StatusEffectInstance SANGUINE_BLIGHT_II = new StatusEffectInstance(ModStatusEffects.SANGUINE_BLIGHT.holder(), ModConfig.Curses.stageTwoCurseDuration * ModConfig.Curses.stageTwoCurseUnit.getMultiplier(), 1, true, false, true);
+	public static final StatusEffectInstance SANGUINE_BLIGHT_III = new StatusEffectInstance(ModStatusEffects.SANGUINE_BLIGHT.holder(), ModConfig.Curses.stageThreeCurseDuration * ModConfig.Curses.stageThreeCurseUnit.getMultiplier(), 2, true, false, true);
+	public static final StatusEffectInstance CURSED_CLAWS_I = new StatusEffectInstance(ModStatusEffects.CURSED_CLAWS.holder(), ModConfig.Curses.stageOneCurseDuration * ModConfig.Curses.stageOneCurseUnit.getMultiplier(), 0, true, false, true);
+	public static final StatusEffectInstance CURSED_CLAWS_II = new StatusEffectInstance(ModStatusEffects.CURSED_CLAWS.holder(), ModConfig.Curses.stageTwoCurseDuration * ModConfig.Curses.stageTwoCurseUnit.getMultiplier(), 1, true, false, true);
+	public static final StatusEffectInstance CURSED_CLAWS_III = new StatusEffectInstance(ModStatusEffects.CURSED_CLAWS.holder(), ModConfig.Curses.stageThreeCurseDuration * ModConfig.Curses.stageThreeCurseUnit.getMultiplier(), 2, true, false, true);
 
 	public static EntityHitResult raycastEntity(PlayerEntity camera) {
 		double d = Math.max(camera.getBlockInteractionRange(), camera.getEntityInteractionRange());

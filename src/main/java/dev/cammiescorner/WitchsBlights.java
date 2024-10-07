@@ -42,7 +42,7 @@ public class WitchsBlights implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		CONFIGURATOR.register(WitchsBlightsConfig.class);
+		CONFIGURATOR.register(ModConfig.class);
 		RegistryService registryService = RegistryService.get();
 
 		ModComponentTypes.COMPONENTS.accept(registryService);
