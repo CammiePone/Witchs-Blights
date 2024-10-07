@@ -1,5 +1,6 @@
 package dev.cammiescorner.common.entities;
 
+import dev.cammiescorner.common.Utils;
 import dev.cammiescorner.common.registries.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -12,16 +13,22 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 public abstract class BeastEntity extends HostileEntity {
 	public static final TrackedData<Boolean> HUNTING = DataTracker.registerData(BeastEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 	public static final TrackedData<Integer> ATTACK_COOLDOWN = DataTracker.registerData(BeastEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	private UUID ownerId = Utils.NIL_UUID;
 
 	public BeastEntity(EntityType<? extends HostileEntity> entityType, World world) {
 		super(entityType, world);
@@ -101,6 +108,7 @@ public abstract class BeastEntity extends HostileEntity {
 		super.writeCustomDataToNbt(nbt);
 		nbt.putBoolean("IsHunting", isHunting());
 		nbt.putInt("AttackCooldown", getAttackCooldown());
+		nbt.putUuid("Owner", ownerId);
 	}
 
 	@Override
@@ -108,6 +116,15 @@ public abstract class BeastEntity extends HostileEntity {
 		super.readCustomDataFromNbt(nbt);
 		setHunting(nbt.getBoolean("IsHunting"));
 		setAttackCooldown(nbt.getInt("AttackCooldown"));
+		ownerId = nbt.getUuid("Owner");
+	}
+
+	public ServerPlayerEntity getOwner() {
+		return getWorld() instanceof ServerWorld serverWorld ? (ServerPlayerEntity) serverWorld.getPlayerByUuid(ownerId) : null;
+	}
+
+	public void setOwner(PlayerEntity player) {
+		ownerId = player.getUuid();
 	}
 
 	public abstract void addExtraAttackEffects(LivingEntity target);

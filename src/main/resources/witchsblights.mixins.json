@@ -8,6 +8,7 @@
 		"LivingEntityMixin",
 		"MilkBucketItemMixin",
 		"MobEntityMixin",
+		"ItemEntityMixin",
 		"PotionContentsComponentMixin",
 		"PotionEntityMixin",
 		"RaiderEntityMixin",

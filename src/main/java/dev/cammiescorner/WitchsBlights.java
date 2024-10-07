@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefulconfig.api.loader.Configurator;
 import dev.cammiescorner.api.Transformation;
 import dev.cammiescorner.common.Utils;
 import dev.cammiescorner.common.components.RespawnableEffectsComponent;
+import dev.cammiescorner.common.components.TransformationComponent;
 import dev.cammiescorner.common.entities.VampireBeastEntity;
 import dev.cammiescorner.common.registries.*;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
@@ -13,6 +14,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -84,13 +86,20 @@ public class WitchsBlights implements ModInitializer {
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			if(!alive) {
-				RespawnableEffectsComponent incurableEffectsComponent = newPlayer.getComponent(ModComponents.RESPAWNABLE_EFFECTS);
+				RespawnableEffectsComponent component = newPlayer.getComponent(ModComponents.RESPAWNABLE_EFFECTS);
 
-				for(StatusEffectInstance statusEffect : incurableEffectsComponent.getEffects())
+				for(StatusEffectInstance statusEffect : component.getEffects())
 					newPlayer.addStatusEffect(statusEffect);
 
-				incurableEffectsComponent.clearStatusEffects();
+				component.clearStatusEffects();
 			}
+		});
+
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			TransformationComponent component = handler.getPlayer().getComponent(ModComponents.TRANSFORMATION);
+
+			if(!component.isTransformed())
+				component.stopUrging();
 		});
 	}
 

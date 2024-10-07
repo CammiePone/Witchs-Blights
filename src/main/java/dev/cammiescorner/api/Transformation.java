@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
@@ -69,8 +70,14 @@ public class Transformation {
 		if(beast != null) {
 			beast.refreshPositionAndAngles(player.getPos(), player.getYaw(), player.getPitch());
 			beast.setTarget(target);
+			beast.setOwner(player);
 			world.spawnEntity(beast);
 
+			for(ItemStack stack : player.getEquippedItems()) {
+				player.dropItem(stack, true, true);
+			}
+
+			player.setInvulnerable(true);
 			player.setCameraEntity(beast);
 			component.setNoTargetTimer(100);
 			component.setTransformed(true);
@@ -79,8 +86,10 @@ public class Transformation {
 
 	public void untransform(ServerPlayerEntity player) {
 		TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
+
 		component.setTransformed(false);
 		component.stopUrging();
+		player.setInvulnerable(false);
 
 		if(!player.equals(player.getCameraEntity()))
 			player.getCameraEntity().remove(Entity.RemovalReason.DISCARDED);
