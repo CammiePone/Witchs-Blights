@@ -1,10 +1,9 @@
 package dev.cammiescorner.common.components;
 
-import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.ModConfig;
+import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.api.Transformation;
 import dev.cammiescorner.common.Utils;
-import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModTransformations;
 import net.minecraft.entity.Entity;
@@ -17,7 +16,6 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -38,7 +36,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 	protected boolean isUrging;
 	protected boolean isTransformed;
 	protected long startedUrging;
-	protected int noTargetTimer;
+	public int noTargetTimer;
 
 	public TransformationComponent(PlayerEntity player) {
 		this.player = player;
@@ -49,10 +47,9 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 		if(player.getWorld() instanceof ServerWorld world && player instanceof ServerPlayerEntity serverPlayer && transformation.isAfflicted(player)) {
 			HostileEntity thaBeast = serverPlayer.getCameraEntity() instanceof HostileEntity beast ? beast : null;
 
-			if(!isTransformed && world.getDifficulty() != Difficulty.PEACEFUL) {
+			if(!isTransformed && world.getDifficulty() != Difficulty.PEACEFUL && !player.isCreative() && !player.isSpectator()) {
 				Vec3d offset = player.getPos().add(0, player.getHeight() * 0.5, 0);
 				List<Entity> targets = world.getOtherEntities(player, urgingBox.offset(offset), entity -> entity instanceof LivingEntity && entity.getType().isIn(transformation.getTargets()) && entity.distanceTo(player) <= ModConfig.VampireBeast.vampireUrgingRange).stream().sorted((o1, o2) -> Double.compare(o1.squaredDistanceTo(player), o2.squaredDistanceTo(player))).toList();
-				List<? extends BeastEntity> beasts = world.getEntitiesByType(TypeFilter.instanceOf(BeastEntity.class), beastEntity -> serverPlayer == beastEntity.getOwner());
 
 				if(targets.isEmpty())
 					stopUrging();
@@ -62,12 +59,6 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 
 					if(getUrgingProgress() >= 1)
 						transformation.transform(serverPlayer, target);
-				}
-
-				if(!beasts.isEmpty() && serverPlayer.getCameraEntity() == serverPlayer) {
-					setTransformed(true);
-					noTargetTimer = ModConfig.AllBeasts.untransformIfNoTargetTicks;
-					serverPlayer.setCameraEntity(beasts.getFirst());
 				}
 			}
 			else {

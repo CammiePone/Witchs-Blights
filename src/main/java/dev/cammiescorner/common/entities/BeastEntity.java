@@ -56,6 +56,16 @@ public abstract class BeastEntity extends HostileEntity {
 	}
 
 	@Override
+	public boolean isDead() {
+		boolean bl = super.isDead();
+
+		if(bl && getOwner() != null)
+			getOwner().kill();
+
+		return bl;
+	}
+
+	@Override
 	protected float getBaseMovementSpeedMultiplier() {
 		return getTarget() != null && getTarget().isSprinting() ? 2f : 1f;
 	}
