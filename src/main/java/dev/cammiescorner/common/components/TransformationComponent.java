@@ -61,7 +61,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 						transformation.transform(serverPlayer, target);
 				}
 			}
-			else {
+			else if(isTransformed) {
 				if(thaBeast != null) {
 					if(thaBeast.isRemoved()) {
 						transformation.untransform(serverPlayer);
