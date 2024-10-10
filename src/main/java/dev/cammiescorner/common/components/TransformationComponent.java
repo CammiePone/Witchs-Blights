@@ -12,6 +12,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -48,21 +49,25 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 		if(player.getWorld() instanceof ServerWorld world && player instanceof ServerPlayerEntity serverPlayer && transformation.isAfflicted(player) && !paused) {
 			BeastEntity thaBeast = serverPlayer.getCameraEntity() instanceof BeastEntity beast ? beast : null;
 
-			if(!isTransformed && !player.isCreative() && !player.isSpectator()) {
-				Vec3d offset = player.getPos().add(0, player.getHeight() * 0.5, 0);
-				List<Entity> targets = world.getOtherEntities(player, urgingBox.offset(offset), entity -> entity instanceof LivingEntity && entity.getType().isIn(transformation.getTargets()) && entity.distanceTo(player) <= ModConfig.VampireBeast.vampireUrgingRange).stream().sorted((o1, o2) -> Double.compare(o1.squaredDistanceTo(player), o2.squaredDistanceTo(player))).toList();
+			if(!isTransformed) {
+				if(world.getDifficulty() != Difficulty.PEACEFUL && EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player)) {
+					Vec3d offset = player.getPos().add(0, player.getHeight() * 0.5, 0);
+					List<Entity> targets = world.getOtherEntities(player, urgingBox.offset(offset), entity -> entity instanceof LivingEntity && entity.getType().isIn(transformation.getTargets()) && entity.distanceTo(player) <= ModConfig.VampireBeast.vampireUrgingRange).stream().sorted((o1, o2) -> Double.compare(o1.squaredDistanceTo(player), o2.squaredDistanceTo(player))).toList();
 
-				if((targets.isEmpty() || world.getDifficulty() == Difficulty.PEACEFUL) && isUrging)
-					stopUrging();
-				else if(!targets.isEmpty() && targets.getFirst() instanceof LivingEntity target) {
-					if(!isUrging)
-						startUrging(target);
+					if(targets.isEmpty() && isUrging)
+						stopUrging();
+					else if(!targets.isEmpty() && targets.getFirst() instanceof LivingEntity target) {
+						if(!isUrging)
+							startUrging(target);
 
-					if(getUrgingProgress() >= 1)
-						transformation.transform(serverPlayer, target);
+						if(getUrgingProgress() >= 1)
+							transformation.transform(serverPlayer, target);
+					}
 				}
+				else if(isUrging)
+					stopUrging();
 			}
-			else if(isTransformed) {
+			else {
 				if(thaBeast != null) {
 					if(thaBeast.isRemoved()) {
 						transformation.untransform(serverPlayer);
