@@ -46,7 +46,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 
 	@Override
 	public void serverTick() {
-		if(player.getWorld() instanceof ServerWorld world && player instanceof ServerPlayerEntity serverPlayer && transformation.isAfflicted(player) && !paused) {
+		if(!paused && player.getWorld() instanceof ServerWorld world && player instanceof ServerPlayerEntity serverPlayer && transformation.isAfflicted(player)) {
 			BeastEntity thaBeast = serverPlayer.getCameraEntity() instanceof BeastEntity beast ? beast : null;
 
 			if(!isTransformed) {
