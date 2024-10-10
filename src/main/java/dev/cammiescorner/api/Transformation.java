@@ -5,6 +5,7 @@ import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModTransformations;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityStatuses;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -14,6 +15,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,10 +70,10 @@ public class Transformation {
 		TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 		if(beast != null) {
-			beast.refreshPositionAndAngles(player.getPos(), player.getYaw(), player.getPitch());
 			beast.setTarget(target);
 			beast.setOwner(player);
 			world.spawnEntity(beast);
+			beast.refreshPositionAndAngles(player.getPos(), player.getYaw(), player.getPitch());
 
 			for(ItemStack stack : player.getEquippedItems()) {
 				player.dropItem(stack, true, true);
@@ -81,6 +83,7 @@ public class Transformation {
 			player.setCameraEntity(beast);
 			component.setNoTargetTimer(100);
 			component.setTransformed(true);
+			world.sendEntityStatus(player, EntityStatuses.ADD_DEATH_PARTICLES);
 		}
 	}
 
@@ -91,8 +94,15 @@ public class Transformation {
 		component.stopUrging();
 		player.setInvulnerable(false);
 
-		if(!player.equals(player.getCameraEntity()))
+		if(player.getCameraEntity() instanceof BeastEntity beast) {
+			Vec3d position = beast.getPos();
+			float yaw = beast.getYaw();
+			float pitch = beast.getPitch();
+
 			player.getCameraEntity().remove(Entity.RemovalReason.DISCARDED);
+			player.getWorld().sendEntityStatus(player, EntityStatuses.ADD_DEATH_PARTICLES);
+			player.refreshPositionAndAngles(position, yaw, pitch);
+		}
 	}
 
 	public RegistryEntry<Potion> getCurse() {

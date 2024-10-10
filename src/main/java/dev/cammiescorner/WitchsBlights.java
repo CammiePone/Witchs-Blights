@@ -9,6 +9,7 @@ import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.entities.VampireBeastEntity;
 import dev.cammiescorner.common.registries.*;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
+import dev.upcraft.sparkweave.api.scheduler.Tasks;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -100,30 +101,31 @@ public class WitchsBlights implements ModInitializer {
 			}
 		});
 
-		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-			TransformationComponent component = handler.getPlayer().getComponent(ModComponents.TRANSFORMATION);
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> Tasks.scheduleEphemeral(() -> {
+			ServerPlayerEntity player = handler.getPlayer();
+			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 			if(component.isTransformed())
-				component.getTransformation().transform(handler.getPlayer(), component.getTarget());
+				component.getTransformation().transform(player, component.getTarget());
 			else
 				component.stopUrging();
 
-			// WHY IS isTransformed() RETURNING FALSE HERE
-		});
+			component.unpause();
+		}, 3));
 
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-			TransformationComponent component = handler.getPlayer().getComponent(ModComponents.TRANSFORMATION);
-			ServerWorld world = handler.getPlayer().getServerWorld();
+			ServerPlayerEntity player = handler.getPlayer();
+			ServerWorld world = player.getServerWorld();
+			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 			if(component.isTransformed()) {
-				List<? extends BeastEntity> beasts = world.getEntitiesByType(TypeFilter.instanceOf(BeastEntity.class), beastEntity -> beastEntity.getOwner() == handler.getPlayer());
+				List<? extends BeastEntity> beasts = world.getEntitiesByType(TypeFilter.instanceOf(BeastEntity.class), beastEntity -> beastEntity.getOwner() == player);
 
 				for(BeastEntity beast : beasts)
 					beast.remove(Entity.RemovalReason.DISCARDED);
 			}
 
-			// BUT IT'S RETURNING TRUE HERE
-			// AND TO ADD TO THE BS, IF I REMOVE THIS CODE, IT RETURNS TRUE ON JOIN
+			component.pause();
 		});
 	}
 

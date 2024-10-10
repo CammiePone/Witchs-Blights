@@ -4,11 +4,11 @@ import dev.cammiescorner.ModConfig;
 import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.api.Transformation;
 import dev.cammiescorner.common.Utils;
+import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModTransformations;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.RegistryByteBuf;
@@ -35,6 +35,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 	protected UUID targetId = Utils.NIL_UUID;
 	protected boolean isUrging;
 	protected boolean isTransformed;
+	protected boolean paused;
 	protected long startedUrging;
 	public int noTargetTimer;
 
@@ -44,16 +45,16 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 
 	@Override
 	public void serverTick() {
-		if(player.getWorld() instanceof ServerWorld world && player instanceof ServerPlayerEntity serverPlayer && transformation.isAfflicted(player)) {
-			HostileEntity thaBeast = serverPlayer.getCameraEntity() instanceof HostileEntity beast ? beast : null;
+		if(player.getWorld() instanceof ServerWorld world && player instanceof ServerPlayerEntity serverPlayer && transformation.isAfflicted(player) && !paused) {
+			BeastEntity thaBeast = serverPlayer.getCameraEntity() instanceof BeastEntity beast ? beast : null;
 
-			if(!isTransformed && world.getDifficulty() != Difficulty.PEACEFUL && !player.isCreative() && !player.isSpectator()) {
+			if(!isTransformed && !player.isCreative() && !player.isSpectator()) {
 				Vec3d offset = player.getPos().add(0, player.getHeight() * 0.5, 0);
 				List<Entity> targets = world.getOtherEntities(player, urgingBox.offset(offset), entity -> entity instanceof LivingEntity && entity.getType().isIn(transformation.getTargets()) && entity.distanceTo(player) <= ModConfig.VampireBeast.vampireUrgingRange).stream().sorted((o1, o2) -> Double.compare(o1.squaredDistanceTo(player), o2.squaredDistanceTo(player))).toList();
 
-				if(targets.isEmpty())
+				if((targets.isEmpty() || world.getDifficulty() == Difficulty.PEACEFUL) && isUrging)
 					stopUrging();
-				else if(targets.getFirst() instanceof LivingEntity target) {
+				else if(!targets.isEmpty() && targets.getFirst() instanceof LivingEntity target) {
 					if(!isUrging)
 						startUrging(target);
 
@@ -85,6 +86,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 		targetId = tag.getUuid("TargetId");
 		isUrging = tag.getBoolean("IsUrging");
 		isTransformed = tag.getBoolean("IsTransformed");
+		paused = tag.getBoolean("Paused");
 		startedUrging = tag.getLong("StartedUrging");
 		noTargetTimer = tag.getInt("NoTargetTimer");
 	}
@@ -95,6 +97,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 		tag.putUuid("TargetId", targetId);
 		tag.putBoolean("IsUrging", isUrging);
 		tag.putBoolean("IsTransformed", isTransformed);
+		tag.putBoolean("Paused", paused);
 		tag.putLong("StartedUrging", startedUrging);
 		tag.putInt("NoTargetTimer", noTargetTimer);
 	}
@@ -146,6 +149,14 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 	public void setTransformed(boolean transformed) {
 		isTransformed = transformed;
 		player.syncComponent(ModComponents.TRANSFORMATION);
+	}
+
+	public void pause() {
+		paused = true;
+	}
+
+	public void unpause() {
+		paused = false;
 	}
 
 	public void setNoTargetTimer(int timer) {

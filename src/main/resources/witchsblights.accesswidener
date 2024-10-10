@@ -9,3 +9,4 @@ accessible method net/minecraft/entity/LivingEntity modifyAppliedDamage (Lnet/mi
 accessible method net/minecraft/entity/LivingEntity applyArmorToDamage (Lnet/minecraft/entity/damage/DamageSource;F)F
 accessible method net/minecraft/registry/entry/RegistryEntry$Reference setValue (Ljava/lang/Object;)V
 accessible method net/minecraft/entity/mob/MobEntity resetSoundDelay ()V
+accessible method net/minecraft/entity/LivingEntity updatePostDeath ()V
