@@ -5,13 +5,14 @@
 	"mixins": [
 		"AreaEffectCloudEntityMixin",
 		"EnchantmentMixin",
+		"ItemEntityMixin",
 		"LivingEntityMixin",
 		"MilkBucketItemMixin",
 		"MobEntityMixin",
-		"ItemEntityMixin",
 		"PotionContentsComponentMixin",
 		"PotionEntityMixin",
 		"RaiderEntityMixin",
+		"ServerWorldMixin",
 		"StatusEffectUtilMixin"
 	],
 	"injectors": {

@@ -13,6 +13,7 @@ import dev.upcraft.sparkweave.api.scheduler.Tasks;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -21,12 +22,15 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.random.Random;
@@ -128,6 +132,26 @@ public class WitchsBlights implements ModInitializer {
 			}
 
 			component.pause();
+		});
+
+		EntitySleepEvents.ALLOW_SLEEP_TIME.register((player, sleepingPos, vanillaResult) -> {
+			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
+
+			if(component.getTransformation().isIn(ModTags.NOCTURNAL) && !vanillaResult)
+				return ActionResult.success(true);
+
+			return ActionResult.PASS;
+		});
+
+		EntitySleepEvents.ALLOW_SLEEPING.register((player, sleepingPos) -> {
+			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
+
+			if(component.getTransformation().isIn(ModTags.NOCTURNAL) && !player.getWorld().isDay()) {
+				player.sendMessage(Text.translatable("block.witchsblights.bed.is_not_day"), true);
+				return PlayerEntity.SleepFailureReason.OTHER_PROBLEM;
+			}
+
+			return null;
 		});
 	}
 

@@ -1,13 +1,11 @@
 package dev.cammiescorner.api;
 
+import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.common.components.TransformationComponent;
 import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModTransformations;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityStatuses;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -75,8 +73,13 @@ public class Transformation {
 			world.spawnEntity(beast);
 			beast.refreshPositionAndAngles(player.getPos(), player.getYaw(), player.getPitch());
 
-			for(ItemStack stack : player.getEquippedItems()) {
-				player.dropItem(stack, true, true);
+			for(EquipmentSlot slot : EquipmentSlot.values()) {
+				ItemStack stack = player.getEquippedStack(slot);
+
+				if(!stack.isEmpty()) {
+					player.dropItem(stack, true, false);
+					player.equipStack(slot, ItemStack.EMPTY);
+				}
 			}
 
 			player.setInvulnerable(true);
@@ -115,5 +118,9 @@ public class Transformation {
 
 	public TagKey<EntityType<?>> getTargets() {
 		return targets;
+	}
+
+	public boolean isIn(TagKey<Transformation> tag) {
+		return WitchsBlights.TRANSFORMATIONS.getEntry(this).isIn(tag);
 	}
 }
