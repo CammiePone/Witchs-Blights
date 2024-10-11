@@ -20,6 +20,7 @@
 		"defaultRequire": 1
 	},
 	"client": [
-		"client.InGameHudMixin"
+		"client.InGameHudMixin",
+		"client.LivingEntityRendererMixin"
 	]
 }

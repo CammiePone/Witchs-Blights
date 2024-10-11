@@ -22,6 +22,7 @@ public class ModComponents implements EntityComponentInitializer {
 	public static final ComponentKey<BloodComponent> BLOOD = createComponent("blood", BloodComponent.class);
 	public static final ComponentKey<BeastMovementComponent> SPECIAL_BEAST_MOVEMENT = createComponent("special_beast_movement", BeastMovementComponent.class);
 	public static final ComponentKey<TransformationComponent> TRANSFORMATION = createComponent("transformation", TransformationComponent.class);
+	public static final ComponentKey<CureCurseComponent> CURE_CURSE = createComponent("cure_curse", CureCurseComponent.class);
 
 	@Override
 	public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
@@ -32,6 +33,7 @@ public class ModComponents implements EntityComponentInitializer {
 		registry.beginRegistration(IllagerEntity.class, BLOOD).end(BloodComponent::new);
 		registry.beginRegistration(VampireBeastEntity.class, SPECIAL_BEAST_MOVEMENT).end(BeastMovementComponent::new);
 		registry.registerForPlayers(TRANSFORMATION, player -> player instanceof ServerPlayerEntity ? new TransformationComponent(player) : new ClientTransformationComponent(player), RespawnCopyStrategy.ALWAYS_COPY);
+		registry.registerForPlayers(CURE_CURSE, CureCurseComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
 	}
 
 	private static <T extends Component> ComponentKey<T> createComponent(String name, Class<T> component) {

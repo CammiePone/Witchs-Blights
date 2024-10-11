@@ -36,7 +36,8 @@
 			"witchsblights:respawnable_effects",
 			"witchsblights:blood",
 			"witchsblights:special_beast_movement",
-			"witchsblights:transformation"
+			"witchsblights:transformation",
+			"witchsblights:cure_curse"
 		]
 	},
 	"depends": {
