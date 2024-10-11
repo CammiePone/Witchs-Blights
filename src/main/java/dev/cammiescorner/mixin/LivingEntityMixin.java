@@ -50,6 +50,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 					if(tf.getCurse().value().getEffects().getFirst().getEffectType().equals(effect.getEffectType())) {
 						component.setTransformation(tf);
+						syncComponent(ModComponents.TRANSFORMATION);
 						break;
 					}
 				}
@@ -62,9 +63,8 @@ public abstract class LivingEntityMixin extends Entity {
 		if(self instanceof ServerPlayerEntity player && effect.getEffectType().value() instanceof CursedStatusEffect) {
 			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
-			component.getTransformation().untransform(player);
-			component.stopUrging();
 			component.setTransformation(ModTransformations.NONE.get());
+			component.stopUrging();
 		}
 	}
 

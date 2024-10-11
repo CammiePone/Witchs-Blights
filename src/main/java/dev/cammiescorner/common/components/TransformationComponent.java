@@ -112,7 +112,11 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 	}
 
 	public void setTransformation(Transformation transformation) {
+		if(isTransformed && player instanceof ServerPlayerEntity serverPlayer)
+			transformation.untransform(serverPlayer);
+
 		this.transformation = transformation;
+		player.syncComponent(ModComponents.TRANSFORMATION);
 	}
 
 	public void startUrging(@NotNull LivingEntity target) {

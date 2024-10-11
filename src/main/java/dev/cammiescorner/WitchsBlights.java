@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
@@ -78,6 +79,17 @@ public class WitchsBlights implements ModInitializer {
 				return new TradeOffers.SellItemFactory(ModItems.ROSARY.get(), 32, 1, 30).create(entity, random);
 			}
 		}));
+
+		UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
+
+			if(component.getTransformation().isIn(ModTags.DRINKS_BLOOD) && player.isSneaking()) {
+				player.getHungerManager().add(2, 0.2f);
+				return ActionResult.success(true);
+			}
+
+			return ActionResult.PASS;
+		});
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
 			Entity attacker = damageSource.getAttacker();
