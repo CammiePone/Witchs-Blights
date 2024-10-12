@@ -39,7 +39,7 @@ public abstract class LivingEntityMixin extends Entity {
 	public LivingEntityMixin(EntityType<?> type, World world) { super(type, world); }
 
 	@Inject(method = "onStatusEffectApplied", at = @At("HEAD"))
-	private void witchsblights$addTransformation(StatusEffectInstance effect, Entity source, CallbackInfo info) {
+	private void addTransformation(StatusEffectInstance effect, Entity source, CallbackInfo info) {
 		if(self instanceof PlayerEntity player) {
 			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
@@ -59,7 +59,7 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Inject(method = "onStatusEffectRemoved", at = @At("HEAD"))
-	private void witchsblights$removeTransformation(StatusEffectInstance effect, CallbackInfo info) {
+	private void removeTransformation(StatusEffectInstance effect, CallbackInfo info) {
 		if(self instanceof ServerPlayerEntity player && effect.getEffectType().value() instanceof CursedStatusEffect) {
 			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
@@ -69,7 +69,7 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
-	private void witchsblights$shouldApplyCurse(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> info) {
+	private void shouldApplyCurse(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> info) {
 		if(effect.getEffectType().value() instanceof CursedStatusEffect && RosaryItem.hasRosaryEquipped(self)) {
 			EquipmentSlot slot = RosaryItem.getRosarySlot(self);
 			ItemStack stack = self.getEquippedStack(slot);
@@ -84,7 +84,7 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageSource;getAttacker()Lnet/minecraft/entity/Entity;", ordinal = 0))
-	private void witchsblights$letsPaintThisClothRed(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
+	private void letsPaintThisClothRed(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
 		if(self instanceof PlayerEntity && source.isDirect() && source.getAttacker() instanceof PlayerEntity attacker && attacker.getOffHandStack().isOf(ModItems.CLOTH.get())) {
 			ItemStack stack = attacker.getOffHandStack();
 			ItemStack newStack = new ItemStack(ModItems.BLOODSTAINED_CLOTH.get());
@@ -98,7 +98,7 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@ModifyReturnValue(method = "hasInvertedHealingAndHarm", at = @At("RETURN"))
-	private boolean witchsblights$invertHealingAndHarm(boolean original) {
+	private boolean invertHealingAndHarm(boolean original) {
 		return original || hasStatusEffect(ModStatusEffects.SANGUINE_BLIGHT.holder());
 	}
 }

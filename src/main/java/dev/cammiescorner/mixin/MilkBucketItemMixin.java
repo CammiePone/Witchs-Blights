@@ -18,12 +18,12 @@ import java.util.List;
 @Mixin(MilkBucketItem.class)
 public class MilkBucketItemMixin {
 	@Inject(method = "finishUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;clearStatusEffects()Z"))
-	private void witchsblights$captureStatusEffect(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info, @Share("statusEffects") LocalRef<List<StatusEffectInstance>> ref) {
+	private void captureStatusEffect(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info, @Share("statusEffects") LocalRef<List<StatusEffectInstance>> ref) {
 		ref.set(user.getStatusEffects().stream().filter(statusEffectInstance -> statusEffectInstance.getEffectType().value() instanceof CursedStatusEffect).toList());
 	}
 
 	@Inject(method = "finishUsing", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;clearStatusEffects()Z"))
-	private void witchsblights$dontClearIncurableEffects(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info, @Share("statusEffects") LocalRef<List<StatusEffectInstance>> ref) {
+	private void dontClearIncurableEffects(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> info, @Share("statusEffects") LocalRef<List<StatusEffectInstance>> ref) {
 		for(StatusEffectInstance statusEffectInstance : ref.get()) {
 			user.addStatusEffect(statusEffectInstance);
 		}

@@ -32,7 +32,7 @@ public abstract class RaiderEntityMixin extends PatrolEntity {
 	protected RaiderEntityMixin(EntityType<? extends PatrolEntity> entityType, World world) { super(entityType, world); }
 
 	@Inject(method = "onDeath", at = @At("HEAD"))
-	private void witchsblights$throwCursedPotion(DamageSource damageSource, CallbackInfo info) {
+	private void throwCursedPotion(DamageSource damageSource, CallbackInfo info) {
 		if(self instanceof WitchEntity && damageSource.getAttacker() instanceof PlayerEntity attacker && !attacker.isCreative() && getRandom().nextFloat() <= 0.25f) {
 			Vec3d vec3d = attacker.getVelocity();
 			double d = attacker.getX() + vec3d.x - getX();

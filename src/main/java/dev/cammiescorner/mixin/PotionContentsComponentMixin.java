@@ -18,12 +18,12 @@ import java.util.OptionalInt;
 @Mixin(PotionContentsComponent.class)
 public class PotionContentsComponentMixin {
 	@Inject(method = "mixColors", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;shouldShowParticles()Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
-	private static void witchsblights$captureStatusEffectInstance(Iterable<StatusEffectInstance> effects, CallbackInfoReturnable<OptionalInt> cir, int i, int j, int k, int l, Iterator var5, StatusEffectInstance statusEffectInstance, @Share("statusEffectInstance") LocalRef<StatusEffectInstance> ref) {
+	private static void captureStatusEffectInstance(Iterable<StatusEffectInstance> effects, CallbackInfoReturnable<OptionalInt> cir, int i, int j, int k, int l, Iterator var5, StatusEffectInstance statusEffectInstance, @Share("statusEffectInstance") LocalRef<StatusEffectInstance> ref) {
 		ref.set(statusEffectInstance);
 	}
 
 	@ModifyExpressionValue(method = "mixColors", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;shouldShowParticles()Z"))
-	private static boolean witchsblights$showPotionColor(boolean original, @Share("statusEffectInstance") LocalRef<StatusEffectInstance> ref) {
+	private static boolean showPotionColor(boolean original, @Share("statusEffectInstance") LocalRef<StatusEffectInstance> ref) {
 		return original || ref.get().getEffectType().value() instanceof CursedStatusEffect;
 	}
 }

@@ -19,7 +19,7 @@ public abstract class ServerWorldMixin extends World {
 	protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DynamicRegistryManager registryManager, RegistryEntry<DimensionType> dimensionEntry, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long biomeAccess, int maxChainedNeighborUpdates) { super(properties, registryRef, registryManager, dimensionEntry, profiler, isClient, debugWorld, biomeAccess, maxChainedNeighborUpdates); }
 
 	@ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;setTimeOfDay(J)V"))
-	private long witchsblights$vampiresSleepAtNight(long timeOfDay) {
+	private long vampiresSleepAtNight(long timeOfDay) {
 		if(isDay()) {
 			long l = this.properties.getTimeOfDay() + 24000L;
 			return l - l % 24000L + 13000L;

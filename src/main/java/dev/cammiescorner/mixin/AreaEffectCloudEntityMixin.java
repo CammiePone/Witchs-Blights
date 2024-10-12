@@ -17,12 +17,12 @@ import java.util.List;
 @Mixin(AreaEffectCloudEntity.class)
 public class AreaEffectCloudEntityMixin {
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;getEffectType()Lnet/minecraft/registry/entry/RegistryEntry;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILSOFT)
-	private void witchsblight$captureLingeringStatusEffectInstance(CallbackInfo ci, boolean bl, float f, List list, Iterator var5, StatusEffectInstance statusEffectInstance, @Share("originalLingeringEffect") LocalRef<StatusEffectInstance> ref) {
+	private void captureLingeringStatusEffectInstance(CallbackInfo ci, boolean bl, float f, List list, Iterator var5, StatusEffectInstance statusEffectInstance, @Share("originalLingeringEffect") LocalRef<StatusEffectInstance> ref) {
 		ref.set(statusEffectInstance);
 	}
 
 	@ModifyExpressionValue(method = "tick", at = @At(value = "NEW", target = "(Lnet/minecraft/registry/entry/RegistryEntry;IIZZ)Lnet/minecraft/entity/effect/StatusEffectInstance;"))
-	private StatusEffectInstance witchsblights$fixLingeringPotions(StatusEffectInstance original, @Share("originalLingeringEffect") LocalRef<StatusEffectInstance> ref) {
+	private StatusEffectInstance fixLingeringPotions(StatusEffectInstance original, @Share("originalLingeringEffect") LocalRef<StatusEffectInstance> ref) {
 		return new StatusEffectInstance(original.getEffectType(), original.getDuration(), original.getAmplifier(), original.isAmbient(), original.shouldShowParticles(), ref.get().shouldShowIcon());
 	}
 }

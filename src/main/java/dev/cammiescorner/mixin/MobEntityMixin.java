@@ -18,7 +18,7 @@ public abstract class MobEntityMixin {
 	@Shadow @Nullable public abstract LivingEntity getTarget();
 
 	@ModifyReceiver(method = "tickNewAi", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/control/MoveControl;tick()V"))
-	private MoveControl witchsblights$makeVampFly(MoveControl instance) {
+	private MoveControl makeVampFly(MoveControl instance) {
 		if(self instanceof VampireBeastEntity beast) {
 			MoveControl control = instance;
 

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemEntity.class)
 public class ItemEntityMixin {
 	@Inject(method = "onPlayerCollision", at = @At("HEAD"), cancellable = true)
-	private void witchsblights$beastsDontNeedItems(PlayerEntity player, CallbackInfo info) {
+	private void beastsDontNeedItems(PlayerEntity player, CallbackInfo info) {
 		if(player.getComponent(ModComponents.TRANSFORMATION).isTransformed())
 			info.cancel();
 	}

@@ -21,7 +21,7 @@ public class EnchantmentMixin {
 	@Unique private final Enchantment self = (Enchantment) (Object) this;
 
 	@Inject(method = "modifyDamage", at = @At("HEAD"))
-	private void witchsblights$fuckEnchants(ServerWorld world, int level, ItemStack stack, Entity user, DamageSource damageSource, MutableFloat damage, CallbackInfo info) {
+	private void fuckEnchants(ServerWorld world, int level, ItemStack stack, Entity user, DamageSource damageSource, MutableFloat damage, CallbackInfo info) {
 		if(world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(self).matchesKey(Enchantments.SMITE) && user instanceof LivingEntity target && target.hasStatusEffect(ModStatusEffects.SANGUINE_BLIGHT.holder()))
 			damage.add(level * 2.5);
 	}

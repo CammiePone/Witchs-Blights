@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(StatusEffectUtil.class)
 public class StatusEffectUtilMixin {
 	@WrapOperation(method = "getDurationText", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/StringHelper;formatTicks(IF)Ljava/lang/String;"))
-	private static String witchsblights$formatPotionText(int ticks, float tickRateArg, Operation<String> original, StatusEffectInstance effect, float multiplier, float tickRateParam) {
+	private static String formatPotionText(int ticks, float tickRateArg, Operation<String> original, StatusEffectInstance effect, float multiplier, float tickRateParam) {
 		if(effect.getEffectType().value() instanceof CursedStatusEffect) {
 			float months = ticks / (float) Utils.DurationUnits.MONTHS.getMultiplier();
 			float weeks = ticks / (float) Utils.DurationUnits.WEEKS.getMultiplier();
