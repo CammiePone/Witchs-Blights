@@ -16,7 +16,6 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -118,18 +117,17 @@ public class WitchsBlights implements ModInitializer {
 			}
 		});
 
-		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> Tasks.scheduleEphemeral(() -> {
-			if(entity instanceof ServerPlayerEntity player) {
-				TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> Tasks.scheduleEphemeral(() -> {
+			ServerPlayerEntity player = handler.getPlayer();
+			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
-				if(component.isTransformed())
-					component.getTransformation().transform(player, component.getTarget());
-				else
-					component.stopUrging();
+			if(component.isTransformed())
+				component.getTransformation().transform(player, component.getTarget());
+			else
+				component.stopUrging();
 
-				component.unpause();
-			}
-		}, 1));
+			component.unpause();
+		}, 3));
 
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
 			ServerPlayerEntity player = handler.getPlayer();

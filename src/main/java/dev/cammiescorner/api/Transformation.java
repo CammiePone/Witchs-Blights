@@ -70,6 +70,7 @@ public class Transformation {
 		if(beast != null) {
 			beast.setTarget(target);
 			beast.setOwner(player);
+			beast.refreshPositionAndAngles(player.getPos(), player.getYaw(), player.getPitch());
 			world.spawnEntity(beast);
 			beast.refreshPositionAndAngles(player.getPos(), player.getYaw(), player.getPitch());
 
