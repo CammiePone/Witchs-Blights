@@ -88,7 +88,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 	@Override
 	public void readFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
 		transformation = WitchsBlights.TRANSFORMATIONS.get(Identifier.of(tag.getString("Id")));
-		targetId = tag.getUuid("TargetId");
+		targetId = tag.containsUuid("TargetId") ? tag.getUuid("TargetId") : Utils.NIL_UUID;
 		isUrging = tag.getBoolean("IsUrging");
 		isTransformed = tag.getBoolean("IsTransformed");
 		paused = tag.getBoolean("Paused");

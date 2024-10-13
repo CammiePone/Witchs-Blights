@@ -7,7 +7,10 @@ import dev.cammiescorner.common.registries.ModSoundEvents;
 import dev.cammiescorner.common.registries.ModStatusEffects;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
@@ -24,7 +27,6 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -53,20 +55,6 @@ public class VampireBeastEntity extends BeastEntity {
 		targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, false, entity -> !entity.hasStatusEffect(ModStatusEffects.SANGUINE_BLIGHT.holder()) || entity.equals(getAttacker())));
 		targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
 		targetSelector.add(3, new ActiveTargetGoal<>(this, IllagerEntity.class, false));
-	}
-
-	@Override
-	public void tickMovement() {
-		super.tickMovement();
-
-		if(!getWorld().isClient()) {
-			boolean shouldSneak = getTarget() != null && !getWorld().isSpaceEmpty(getTarget(), Box.of(getTarget().getEyePos().add(0, 0.5, 0), getTarget().getWidth(), 1, getTarget().getWidth()));
-
-			if(isSneaking() != shouldSneak && canChangeIntoPose(isSneaking() ? EntityPose.STANDING : EntityPose.CROUCHING)) {
-				setSneaking(shouldSneak);
-				setPose(isSneaking() ? EntityPose.CROUCHING : EntityPose.STANDING);
-			}
-		}
 	}
 
 	@Override
@@ -122,10 +110,6 @@ public class VampireBeastEntity extends BeastEntity {
 	public void addExtraAttackEffects(LivingEntity target) {
 		DamageSource source = getDamageSources().mobAttack(this);
 		heal(target.modifyAppliedDamage(source, target.applyArmorToDamage(source, (float) getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE))));
-	}
-
-	protected boolean canChangeIntoPose(EntityPose pose) {
-		return getWorld().isSpaceEmpty(this, getBaseDimensions(pose).getBoxAt(getPos()).contract(1.0E-7));
 	}
 
 	public boolean isWeakTo(DamageSource source) {

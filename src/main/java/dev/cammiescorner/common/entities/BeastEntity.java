@@ -4,8 +4,10 @@ import dev.cammiescorner.common.Utils;
 import dev.cammiescorner.common.registries.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -20,9 +22,11 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.UUID;
 
 public abstract class BeastEntity extends HostileEntity {
@@ -114,11 +118,32 @@ public abstract class BeastEntity extends HostileEntity {
 	}
 
 	@Override
+	public void tickMovement() {
+		super.tickMovement();
+
+		if(!getWorld().isClient()) {
+			Iterator<BlockPos.Mutable> iterator = BlockPos.iterateInSquare(getBlockPos().up(2), 1, Direction.WEST, Direction.SOUTH).iterator();
+			boolean shouldSneak = false;
+
+			while(!shouldSneak && iterator.hasNext()) {
+				BlockPos.Mutable mutable = iterator.next();
+				shouldSneak = !getWorld().getBlockState(mutable).canPathfindThrough(NavigationType.LAND);
+			}
+
+			if(isSneaking() != shouldSneak && canChangeIntoPose(isSneaking() ? EntityPose.STANDING : EntityPose.CROUCHING)) {
+				setSneaking(shouldSneak);
+				setPose(isSneaking() ? EntityPose.CROUCHING : EntityPose.STANDING);
+			}
+		}
+	}
+
+	@Override
 	public void writeCustomDataToNbt(NbtCompound nbt) {
 		super.writeCustomDataToNbt(nbt);
 		nbt.putBoolean("IsHunting", isHunting());
 		nbt.putInt("AttackCooldown", getAttackCooldown());
 		nbt.putUuid("Owner", ownerId);
+		nbt.putInt("PoseIndex", getPose().getIndex());
 	}
 
 	@Override
@@ -126,7 +151,8 @@ public abstract class BeastEntity extends HostileEntity {
 		super.readCustomDataFromNbt(nbt);
 		setHunting(nbt.getBoolean("IsHunting"));
 		setAttackCooldown(nbt.getInt("AttackCooldown"));
-		ownerId = nbt.getUuid("Owner");
+		ownerId = nbt.containsUuid("Owner") ? nbt.getUuid("Owner") : Utils.NIL_UUID;
+		setPose(EntityPose.values()[nbt.getInt("PoseIndex")]);
 	}
 
 	public ServerPlayerEntity getOwner() {
@@ -161,5 +187,9 @@ public abstract class BeastEntity extends HostileEntity {
 
 	public void setAttackCooldown(int cooldown) {
 		dataTracker.set(ATTACK_COOLDOWN, cooldown);
+	}
+
+	protected boolean canChangeIntoPose(EntityPose pose) {
+		return getWorld().isSpaceEmpty(this, getBaseDimensions(pose).getBoxAt(getPos()).contract(1.0E-7));
 	}
 }
