@@ -4,7 +4,6 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.client.WitchsBlightsClient;
 import dev.cammiescorner.common.components.TransformationComponent;
-import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModTags;
 import net.minecraft.client.MinecraftClient;
@@ -78,10 +77,9 @@ public class InGameHudMixin {
 			if(component.isTransformed()) {
 				WitchsBlightsClient.renderOverlay(context, WitchsBlightsClient.TRANSFORMED_WAKE, 1f);
 				WitchsBlightsClient.renderOverlay(context, WitchsBlightsClient.TRANSFORMED_BLINK, (float) (1f - Math.max(0, Math.sin((player.age + tickDelta) * 0.1))));
+
+				info.cancel();
 			}
 		}
-
-		if(client.getCameraEntity() instanceof BeastEntity)
-			info.cancel();
 	}
 }
