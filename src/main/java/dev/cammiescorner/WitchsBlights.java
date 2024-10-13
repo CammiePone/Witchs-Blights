@@ -68,6 +68,7 @@ public class WitchsBlights implements ModInitializer {
 		ModRecipes.RECIPE_SERIALIZERS.accept(registryService);
 		ModWorldFeatures.FEATURES.accept(registryService);
 		ModTransformations.TRANSFORMATIONS.accept(registryService);
+		ModParticles.PARTICLE_TYPES.accept(registryService);
 
 		BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.VEGETAL_DECORATION, RegistryKey.of(RegistryKeys.PLACED_FEATURE, id("mistletoe")));
 
