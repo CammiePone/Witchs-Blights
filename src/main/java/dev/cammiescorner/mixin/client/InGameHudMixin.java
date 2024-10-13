@@ -2,6 +2,7 @@ package dev.cammiescorner.mixin.client;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.cammiescorner.WitchsBlights;
+import dev.cammiescorner.client.WitchsBlightsClient;
 import dev.cammiescorner.common.components.TransformationComponent;
 import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.registries.ModComponents;
@@ -68,6 +69,18 @@ public class InGameHudMixin {
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void unrenderHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
+		PlayerEntity player = client.player;
+		float tickDelta = tickCounter.getTickDelta(false);
+		
+		if(player != null && !client.isPaused()) {
+			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
+
+			if(component.isTransformed()) {
+				WitchsBlightsClient.renderOverlay(context, WitchsBlightsClient.TRANSFORMED_WAKE, 1f);
+				WitchsBlightsClient.renderOverlay(context, WitchsBlightsClient.TRANSFORMED_BLINK, (float) Math.max(0, Math.sin((player.age + tickDelta) * 0.1)));
+			}
+		}
+
 		if(client.getCameraEntity() instanceof BeastEntity)
 			info.cancel();
 	}

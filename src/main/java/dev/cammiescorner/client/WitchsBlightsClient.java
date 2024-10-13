@@ -1,6 +1,8 @@
 package dev.cammiescorner.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import dev.cammiescorner.ModConfig;
+import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.client.models.VampireBeastEntityModel;
 import dev.cammiescorner.client.renderers.VampireBeastEntityRenderer;
 import dev.cammiescorner.common.components.TransformationComponent;
@@ -13,15 +15,20 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 
 public class WitchsBlightsClient implements ClientModInitializer {
-	private static MinecraftClient client = MinecraftClient.getInstance();
+	private static final MinecraftClient client = MinecraftClient.getInstance();
+	public static final Identifier TRANSFORMED_WAKE = WitchsBlights.id("textures/gui/hud/transformed_wake.png");
+	public static final Identifier TRANSFORMED_BLINK = WitchsBlights.id("textures/gui/hud/transformed_blink.png");
+	public static final Identifier URGING = WitchsBlights.id("textures/gui/hud/urging_overlay.png");
 
 	@Override
 	public void onInitializeClient() {
@@ -36,13 +43,16 @@ public class WitchsBlightsClient implements ClientModInitializer {
 			float tickDelta = tickCounter.getTickDelta(false);
 			float urgingLookStrength = ModConfig.AllBeasts.urgingLookStrength;
 
-			if(urgingLookStrength > 0 && player != null) {
+			if(player != null && !client.isPaused()) {
 				TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
-				if(!component.isTransformed()) {
+				if(!component.isTransformed() && urgingLookStrength > 0) {
 					LivingEntity target = component.getTarget();
+					float urgingProgress = component.getUrgingProgress();
 
 					if(target != null && target.isAlive()) {
+						renderOverlay(drawContext, URGING, urgingProgress * 0.8f);
+
 						Vec3d targetPos = target.getLerpedPos(tickDelta).add(0, target.getHeight() * 0.5, 0);
 						Vec3d playerPos = player.getLerpedPos(tickDelta).add(0, player.getEyeHeight(player.getPose()), 0);
 						Vec3d distance = targetPos.subtract(playerPos);
@@ -65,5 +75,17 @@ public class WitchsBlightsClient implements ClientModInitializer {
 				}
 			}
 		});
+	}
+
+	public static void renderOverlay(DrawContext context, Identifier texture, float opacity) {
+		RenderSystem.disableDepthTest();
+		RenderSystem.depthMask(false);
+		RenderSystem.enableBlend();
+		context.setShaderColor(1f, 1f, 1f, opacity);
+		context.drawTexture(texture, 0, 0, -90, 0f, 0f, context.getScaledWindowWidth(), context.getScaledWindowHeight(), context.getScaledWindowWidth(), context.getScaledWindowHeight());
+		RenderSystem.disableBlend();
+		RenderSystem.depthMask(true);
+		RenderSystem.enableDepthTest();
+		context.setShaderColor(1f, 1f, 1f, 1f);
 	}
 }
