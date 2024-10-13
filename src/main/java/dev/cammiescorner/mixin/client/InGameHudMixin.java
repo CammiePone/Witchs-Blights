@@ -71,8 +71,8 @@ public class InGameHudMixin {
 	private void unrenderHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
 		PlayerEntity player = client.player;
 		float tickDelta = tickCounter.getTickDelta(false);
-		
-		if(player != null && !client.isPaused()) {
+
+		if(player != null) {
 			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 			if(component.isTransformed()) {

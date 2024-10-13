@@ -43,7 +43,7 @@ public class WitchsBlightsClient implements ClientModInitializer {
 			float tickDelta = tickCounter.getTickDelta(false);
 			float urgingLookStrength = ModConfig.AllBeasts.urgingLookStrength;
 
-			if(player != null && !client.isPaused()) {
+			if(player != null) {
 				TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 				if(!component.isTransformed() && urgingLookStrength > 0) {
@@ -53,24 +53,26 @@ public class WitchsBlightsClient implements ClientModInitializer {
 					if(target != null && target.isAlive()) {
 						renderOverlay(drawContext, URGING, urgingProgress * 0.8f);
 
-						Vec3d targetPos = target.getLerpedPos(tickDelta).add(0, target.getHeight() * 0.5, 0);
-						Vec3d playerPos = player.getLerpedPos(tickDelta).add(0, player.getEyeHeight(player.getPose()), 0);
-						Vec3d distance = targetPos.subtract(playerPos);
-						double distanceXZ = Math.sqrt(distance.x * distance.x + distance.z * distance.z);
-						float currentPitch = MathHelper.wrapDegrees(player.getPitch(tickDelta));
-						float currentYaw = MathHelper.wrapDegrees(player.getYaw(tickDelta));
-						float desiredPitch = MathHelper.wrapDegrees((float) (-(MathHelper.atan2(distance.y, distanceXZ) * (180 / Math.PI))));
-						float desiredYaw = MathHelper.wrapDegrees((float) (MathHelper.atan2(distance.z, distance.x) * (180 / Math.PI)) - 90.0f);
+						if(!client.isPaused()) {
+							Vec3d targetPos = target.getLerpedPos(tickDelta).add(0, target.getHeight() * 0.5, 0);
+							Vec3d playerPos = player.getLerpedPos(tickDelta).add(0, player.getEyeHeight(player.getPose()), 0);
+							Vec3d distance = targetPos.subtract(playerPos);
+							double distanceXZ = Math.sqrt(distance.x * distance.x + distance.z * distance.z);
+							float currentPitch = MathHelper.wrapDegrees(player.getPitch(tickDelta));
+							float currentYaw = MathHelper.wrapDegrees(player.getYaw(tickDelta));
+							float desiredPitch = MathHelper.wrapDegrees((float) (-(MathHelper.atan2(distance.y, distanceXZ) * (180 / Math.PI))));
+							float desiredYaw = MathHelper.wrapDegrees((float) (MathHelper.atan2(distance.z, distance.x) * (180 / Math.PI)) - 90.0f);
 
-						Vec2f rotationChange = new Vec2f(
-								MathHelper.wrapDegrees(desiredPitch - currentPitch),
-								MathHelper.wrapDegrees(desiredYaw - currentYaw)
-						);
+							Vec2f rotationChange = new Vec2f(
+									MathHelper.wrapDegrees(desiredPitch - currentPitch),
+									MathHelper.wrapDegrees(desiredYaw - currentYaw)
+							);
 
-						Vec2f rotationStep = rotationChange.normalize().multiply(component.getUrgingProgress() * 10f * (MathHelper.clamp(rotationChange.length(), 0, 10) / 10f) * urgingLookStrength);
+							Vec2f rotationStep = rotationChange.normalize().multiply(component.getUrgingProgress() * 10f * (MathHelper.clamp(rotationChange.length(), 0, 10) / 10f) * urgingLookStrength);
 
-						player.setPitch(player.getPitch(tickDelta) + rotationStep.x);
-						player.setYaw(player.getYaw(tickDelta) + rotationStep.y);
+							player.setPitch(player.getPitch(tickDelta) + rotationStep.x);
+							player.setYaw(player.getYaw(tickDelta) + rotationStep.y);
+						}
 					}
 				}
 			}
