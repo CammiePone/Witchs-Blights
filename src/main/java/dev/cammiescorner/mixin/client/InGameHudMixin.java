@@ -77,7 +77,7 @@ public class InGameHudMixin {
 
 			if(component.isTransformed()) {
 				WitchsBlightsClient.renderOverlay(context, WitchsBlightsClient.TRANSFORMED_WAKE, 1f);
-				WitchsBlightsClient.renderOverlay(context, WitchsBlightsClient.TRANSFORMED_BLINK, (float) Math.max(0, Math.sin((player.age + tickDelta) * 0.1)));
+				WitchsBlightsClient.renderOverlay(context, WitchsBlightsClient.TRANSFORMED_BLINK, (float) (1f - Math.max(0, Math.sin((player.age + tickDelta) * 0.1))));
 			}
 		}
 
