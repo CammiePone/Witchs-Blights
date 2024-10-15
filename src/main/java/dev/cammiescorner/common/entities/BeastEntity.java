@@ -26,6 +26,7 @@ import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -63,6 +64,11 @@ public abstract class BeastEntity extends HostileEntity {
 		super.mobTick();
 
 		setHunting(getTarget() != null && getTarget().isAlive());
+	}
+
+	@Override
+	protected boolean canStartRiding(Entity entity) {
+		return false;
 	}
 
 	@Override
@@ -117,7 +123,7 @@ public abstract class BeastEntity extends HostileEntity {
 
 		if(target instanceof LivingEntity livingTarget && succeeds && getWorld() instanceof ServerWorld world) {
 			addExtraAttackEffects(livingTarget);
-			livingTarget.playSound(ModSoundEvents.BEAST_SCRATCH.get());
+			world.playSound(null, livingTarget.getX(), livingTarget.getY(), livingTarget.getZ(), ModSoundEvents.BEAST_SCRATCH.get(), SoundCategory.NEUTRAL);
 
 			for(int count = 0; count < random.nextBetween(8, 16); count++)
 				world.spawnParticles(ModParticles.BLOOD.get(), target.getX(), target.getY() + (target.getHeight() * 0.5f) + random.nextFloat(), target.getZ(), 0, 0, 0, 0, 0);

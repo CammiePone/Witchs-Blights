@@ -13,6 +13,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -24,14 +25,16 @@ public class Transformation {
 	private final int baseUrgingTicks;
 	private final double baseStageUrgingModifier;
 	private final double baseBabyUrgingModifier;
+	private final Box urgingBox;
 
-	public Transformation(RegistryEntry<Potion> curse, EntityType<? extends BeastEntity> beast, TagKey<EntityType<?>> targets, int baseUrgingTicks, double baseStageUrgingModifier, double baseBabyUrgingModifier) {
+	public Transformation(RegistryEntry<Potion> curse, EntityType<? extends BeastEntity> beast, TagKey<EntityType<?>> targets, int baseUrgingTicks, double baseStageUrgingModifier, double baseBabyUrgingModifier, double radius) {
 		this.curse = curse;
 		this.beast = beast;
 		this.targets = targets;
 		this.baseUrgingTicks = baseUrgingTicks;
 		this.baseStageUrgingModifier = baseStageUrgingModifier;
 		this.baseBabyUrgingModifier = baseBabyUrgingModifier;
+		this.urgingBox = new Box(-radius, -radius, -radius, radius, radius, radius);
 	}
 
 	public int getMaxUrgingTicks(PlayerEntity player, @NotNull LivingEntity target) {
@@ -123,5 +126,9 @@ public class Transformation {
 
 	public boolean isIn(TagKey<Transformation> tag) {
 		return WitchsBlights.TRANSFORMATIONS.getEntry(this).isIn(tag);
+	}
+
+	public Box getBoxForUrging() {
+		return urgingBox;
 	}
 }

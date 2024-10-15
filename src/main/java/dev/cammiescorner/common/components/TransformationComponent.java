@@ -17,7 +17,6 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
@@ -31,7 +30,6 @@ import java.util.UUID;
 
 public class TransformationComponent implements AutoSyncedComponent, ServerTickingComponent {
 	protected final PlayerEntity player;
-	protected Box urgingBox = new Box(-ModConfig.VampireBeast.vampireUrgingRange, -ModConfig.VampireBeast.vampireUrgingRange, -ModConfig.VampireBeast.vampireUrgingRange, ModConfig.VampireBeast.vampireUrgingRange, ModConfig.VampireBeast.vampireUrgingRange, ModConfig.VampireBeast.vampireUrgingRange);
 	protected Transformation transformation = ModTransformations.NONE.get();
 	protected UUID targetId = Utils.NIL_UUID;
 	protected boolean isUrging;
@@ -52,7 +50,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 			if(!isTransformed) {
 				if(world.getDifficulty() != Difficulty.PEACEFUL && EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR.test(player)) {
 					Vec3d offset = player.getPos().add(0, player.getHeight() * 0.5, 0);
-					List<Entity> targets = world.getOtherEntities(player, urgingBox.offset(offset), entity -> entity instanceof LivingEntity && entity.getType().isIn(transformation.getTargets()) && entity.distanceTo(player) <= ModConfig.VampireBeast.vampireUrgingRange).stream().sorted((o1, o2) -> Double.compare(o1.squaredDistanceTo(player), o2.squaredDistanceTo(player))).toList();
+					List<Entity> targets = world.getOtherEntities(player, transformation.getBoxForUrging().offset(offset), entity -> entity instanceof LivingEntity && entity.getType().isIn(transformation.getTargets()) && entity.distanceTo(player) <= ModConfig.VampireBeast.vampireUrgingRange).stream().sorted((o1, o2) -> Double.compare(o1.squaredDistanceTo(player), o2.squaredDistanceTo(player))).toList();
 
 					if(targets.isEmpty() && isUrging)
 						stopUrging();

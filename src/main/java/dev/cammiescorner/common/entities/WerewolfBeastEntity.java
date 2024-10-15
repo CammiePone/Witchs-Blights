@@ -78,7 +78,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 	public void tick() {
 		super.tick();
 
-		if(!getWorld().isClient())
+		if(!getWorld().isClient() && !isInPose(EntityPose.CROUCHING))
 			setClimbing(horizontalCollision);
 	}
 

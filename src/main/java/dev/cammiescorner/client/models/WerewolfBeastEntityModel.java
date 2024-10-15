@@ -136,12 +136,12 @@ public class WerewolfBeastEntityModel extends AnimalModel<WerewolfBeastEntity> i
 		leftArm.yaw = 0f;
 
 		animateArms(entity);
-
+		
 		if(climbing) {
 			// TODO climbing anim
 		}
 		else if(sneaking || hunting) {
-			// TODO sneaking
+			// TODO sneaking/hunting anim
 		}
 		else {
 			body.pitch = 0.35f;
