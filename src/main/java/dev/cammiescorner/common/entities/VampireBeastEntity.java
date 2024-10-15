@@ -56,7 +56,7 @@ public class VampireBeastEntity extends BeastEntity {
 
 	@Override
 	protected EntityDimensions getBaseDimensions(EntityPose pose) {
-		return pose == EntityPose.STANDING ? EntityDimensions.changing(0.6f, 2.7f).withEyeHeight(2.35f) : EntityDimensions.changing(0.6f, 1.9f).withEyeHeight(1.75f);
+		return pose == EntityPose.STANDING ? EntityDimensions.changing(0.8f, 2.7f).withEyeHeight(2.35f) : EntityDimensions.changing(0.8f, 1.9f).withEyeHeight(1.75f);
 	}
 
 	@Override

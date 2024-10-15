@@ -1,11 +1,11 @@
 package dev.cammiescorner.common.entities;
 
+import dev.cammiescorner.ModConfig;
+import dev.cammiescorner.common.Utils;
 import dev.cammiescorner.common.registries.ModSoundEvents;
 import dev.cammiescorner.common.registries.ModStatusEffects;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.SpiderNavigation;
@@ -23,11 +23,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class WerewolfBeastEntity extends BeastEntity {
 	public static final TrackedData<Boolean> IS_CLIMBING = DataTracker.registerData(WerewolfBeastEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+	public static final TrackedData<Boolean> SNOWY = DataTracker.registerData(WerewolfBeastEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
 	public WerewolfBeastEntity(EntityType<? extends HostileEntity> entityType, World world) {
 		super(entityType, world);
@@ -43,6 +46,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 	protected void initDataTracker(DataTracker.Builder builder) {
 		super.initDataTracker(builder);
 		builder.add(IS_CLIMBING, false);
+		builder.add(SNOWY, false);
 	}
 
 	@Override
@@ -58,6 +62,14 @@ public class WerewolfBeastEntity extends BeastEntity {
 	}
 
 	@Override
+	public @Nullable EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData) {
+		if(world.getBiome(getBlockPos()).isIn(ConventionalBiomeTags.IS_SNOWY))
+			makeSnowy();
+
+		return super.initialize(world, difficulty, spawnReason, entityData);
+	}
+
+	@Override
 	protected EntityNavigation createNavigation(World world) {
 		return new SpiderNavigation(this, world);
 	}
@@ -66,7 +78,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 	public void tick() {
 		super.tick();
 
-		if(!getWorld().isClient() && !isInPose(EntityPose.CROUCHING))
+		if(!getWorld().isClient())
 			setClimbing(horizontalCollision);
 	}
 
@@ -81,17 +93,25 @@ public class WerewolfBeastEntity extends BeastEntity {
 
 	@Override
 	public void addExtraAttackEffects(LivingEntity target) {
+		if(getWorld().getMoonPhase() == 0 && !getWorld().isDay() && target.canHaveStatusEffect(Utils.CURSED_CLAWS_I) && getRandom().nextFloat() < ModConfig.Werewolf.werewolfSpreadCurseChance) {
+			target.addStatusEffect(Utils.CURSED_CLAWS_I);
+			setTarget(null);
+		}
+	}
 
+	@Override
+	public boolean disablesShield() {
+		return true;
 	}
 
 	@Override
 	protected EntityDimensions getBaseDimensions(EntityPose pose) {
-		return pose == EntityPose.STANDING ? EntityDimensions.changing(0.6f, 2.7f).withEyeHeight(2.35f) : EntityDimensions.changing(0.8f, 0.8f).withEyeHeight(1.75f);
+		return pose == EntityPose.STANDING ? EntityDimensions.changing(0.8f, 2.7f).withEyeHeight(2.35f) : EntityDimensions.changing(0.8f, 1f).withEyeHeight(1.75f);
 	}
 
 	@Override
 	public float getTargetingMargin() {
-		return getPose() == EntityPose.CROUCHING ? 0.5f : 0f;
+		return getPose() == EntityPose.CROUCHING ? 0.8f : 0f;
 	}
 
 	@Override
@@ -140,6 +160,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 		super.writeCustomDataToNbt(nbt);
 
 		nbt.putBoolean("IsClimbing", isClimbing());
+		nbt.putBoolean("IsSnowy", isSnowy());
 	}
 
 	@Override
@@ -147,5 +168,16 @@ public class WerewolfBeastEntity extends BeastEntity {
 		super.readCustomDataFromNbt(nbt);
 
 		setClimbing(nbt.getBoolean("IsClimbing"));
+
+		if(nbt.getBoolean("IsSnowy"))
+			makeSnowy();
+	}
+
+	public void makeSnowy() {
+		dataTracker.set(SNOWY, true);
+	}
+
+	public boolean isSnowy() {
+		return dataTracker.get(SNOWY);
 	}
 }

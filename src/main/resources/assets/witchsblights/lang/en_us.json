@@ -69,5 +69,6 @@
 	"witchsblights.config.baseWerewolfUrgingTicks.name": "Base werewolf urging timer",
 	"witchsblights.config.baseWerewolfStageUrgingModifier.name": "Werewolf urging modifier for curse stage",
 	"witchsblights.config.baseWerewolfBabyUrgingModifier.name": "Werewolf urging modifier if targeting baby",
-	"witchsblights.config.werewolfUrgingRange.name": "Werewolf urging range"
+	"witchsblights.config.werewolfUrgingRange.name": "Werewolf urging range",
+	"witchsblights.config.werewolfSpreadCurseChance.name": "Werewolf spread curse chance on full moons"
 }

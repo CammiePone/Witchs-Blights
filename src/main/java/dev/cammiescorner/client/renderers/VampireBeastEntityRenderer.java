@@ -14,7 +14,7 @@ public class VampireBeastEntityRenderer extends MobEntityRenderer<VampireBeastEn
 	private static final Identifier VAMPIRE_TEXTURE = WitchsBlights.id("textures/entity/vampire_beast.png");
 
 	public VampireBeastEntityRenderer(EntityRendererFactory.Context context) {
-		super(context, new VampireBeastEntityModel(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(VampireBeastEntityModel.MODEL_LAYER)), 0.65f);
+		super(context, new VampireBeastEntityModel(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(VampireBeastEntityModel.MODEL_LAYER)), 0.85f);
 	}
 
 	@Override

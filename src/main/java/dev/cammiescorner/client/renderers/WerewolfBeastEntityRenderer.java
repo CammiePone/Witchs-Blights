@@ -12,9 +12,10 @@ import net.minecraft.util.Identifier;
 
 public class WerewolfBeastEntityRenderer extends MobEntityRenderer<WerewolfBeastEntity, WerewolfBeastEntityModel> {
 	private static final Identifier WEREWOLF_TEXTURE = WitchsBlights.id("textures/entity/werewolf_beast.png");
+	private static final Identifier WEREWOLF_SNOWY_TEXTURE = WitchsBlights.id("textures/entity/werewolf_beast_snowy.png");
 
 	public WerewolfBeastEntityRenderer(EntityRendererFactory.Context context) {
-		super(context, new WerewolfBeastEntityModel(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(WerewolfBeastEntityModel.MODEL_LAYER)), 0.65f);
+		super(context, new WerewolfBeastEntityModel(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(WerewolfBeastEntityModel.MODEL_LAYER)), 0.85f);
 	}
 
 	@Override
@@ -29,6 +30,6 @@ public class WerewolfBeastEntityRenderer extends MobEntityRenderer<WerewolfBeast
 
 	@Override
 	public Identifier getTexture(WerewolfBeastEntity entity) {
-		return WEREWOLF_TEXTURE;
+		return entity.isSnowy() ? WEREWOLF_SNOWY_TEXTURE : WEREWOLF_TEXTURE;
 	}
 }

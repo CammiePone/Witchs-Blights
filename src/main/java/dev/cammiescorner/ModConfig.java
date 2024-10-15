@@ -174,5 +174,12 @@ public class ModConfig {
 				translation = "witchsblights.config.werewolfUrgingRange.name"
 		)
 		public static double werewolfUrgingRange = 8;
+
+		@ConfigEntry(
+				type = EntryType.FLOAT,
+				id = "werewolfSpreadCurseChance",
+				translation = "witchsblights.config.werewolfSpreadCurseChance.name"
+		)
+		public static float werewolfSpreadCurseChance = 0.05f;
 	}
 }
