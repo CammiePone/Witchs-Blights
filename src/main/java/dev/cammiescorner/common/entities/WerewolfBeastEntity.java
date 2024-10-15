@@ -7,6 +7,8 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -53,6 +55,11 @@ public class WerewolfBeastEntity extends BeastEntity {
 		targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
 		targetSelector.add(3, new ActiveTargetGoal<>(this, IllagerEntity.class, false));
 		targetSelector.add(4, new ActiveTargetGoal<>(this, AnimalEntity.class, false));
+	}
+
+	@Override
+	protected EntityNavigation createNavigation(World world) {
+		return new SpiderNavigation(this, world);
 	}
 
 	@Override
