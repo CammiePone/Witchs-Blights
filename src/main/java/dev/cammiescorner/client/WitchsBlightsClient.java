@@ -4,7 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.cammiescorner.ModConfig;
 import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.client.models.VampireBeastEntityModel;
+import dev.cammiescorner.client.models.WerewolfBeastEntityModel;
 import dev.cammiescorner.client.renderers.VampireBeastEntityRenderer;
+import dev.cammiescorner.client.renderers.WerewolfBeastEntityRenderer;
 import dev.cammiescorner.common.components.TransformationComponent;
 import dev.cammiescorner.common.registries.ModBlocks;
 import dev.cammiescorner.common.registries.ModComponents;
@@ -43,7 +45,9 @@ public class WitchsBlightsClient implements ClientModInitializer {
 //		ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null ? BiomeColors.getFoliageColor(world, pos) : FoliageColors.getDefaultColor(), ModBlocks.MISTLETOE.get());
 
 		EntityModelLayerRegistry.registerModelLayer(VampireBeastEntityModel.MODEL_LAYER, VampireBeastEntityModel::getTexturedModelData);
+		EntityModelLayerRegistry.registerModelLayer(WerewolfBeastEntityModel.MODEL_LAYER, WerewolfBeastEntityModel::getTexturedModelData);
 		EntityRendererRegistry.register(ModEntities.VAMPIRE_BEAST.get(), VampireBeastEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.WEREWOLF_BEAST.get(), WerewolfBeastEntityRenderer::new);
 
 		RegisterParticleFactoriesEvent.EVENT.register(event -> {
 			event.registerSprite(ModParticles.BLOOD, (parameters, world, x, y, z, velocityX, velocityY, velocityZ) -> new SpriteBillboardParticle(world, x, y, z, velocityX, velocityY, velocityZ) {

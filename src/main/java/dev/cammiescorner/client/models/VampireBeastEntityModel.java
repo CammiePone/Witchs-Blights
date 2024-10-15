@@ -23,6 +23,7 @@ public class VampireBeastEntityModel extends AnimalModel<VampireBeastEntity> imp
 	public final ModelPart leftWingOuter;
 	public final ModelPart rightLeg;
 	public final ModelPart leftLeg;
+
 	public BipedEntityModel.ArmPose leftArmPose = BipedEntityModel.ArmPose.EMPTY;
 	public BipedEntityModel.ArmPose rightArmPose = BipedEntityModel.ArmPose.EMPTY;
 
@@ -121,17 +122,6 @@ public class VampireBeastEntityModel extends AnimalModel<VampireBeastEntity> imp
 		rightLeg.roll = 0.005f;
 		leftLeg.roll = -0.005f;
 
-		if(riding) {
-			rightArm.pitch += -0.62831855f;
-			leftArm.pitch += -0.62831855f;
-			rightLeg.pitch = -1.4137167f;
-			rightLeg.yaw = 0.31415927f;
-			rightLeg.roll = 0.07853982f;
-			leftLeg.pitch = -1.4137167f;
-			leftLeg.yaw = -0.31415927f;
-			leftLeg.roll = -0.07853982f;
-		}
-
 		rightArm.yaw = 0f;
 		leftArm.yaw = 0f;
 
@@ -220,10 +210,8 @@ public class VampireBeastEntityModel extends AnimalModel<VampireBeastEntity> imp
 		if(hunting || flying)
 			mouth.pivotY = MathHelper.cos(animationProgress * 10f * 0.01f) * 0.05f * 16f + (4 * attackCooldownProgress);
 
-		if(rightArmPose != BipedEntityModel.ArmPose.SPYGLASS)
-			CrossbowPosing.swingArm(rightArm, animationProgress, 1f);
-		if(leftArmPose != BipedEntityModel.ArmPose.SPYGLASS)
-			CrossbowPosing.swingArm(leftArm, animationProgress, -1f);
+		CrossbowPosing.swingArm(rightArm, animationProgress, 1f);
+		CrossbowPosing.swingArm(leftArm, animationProgress, -1f);
 
 		if(leaningPitch > 0f) {
 			float l = limbAngle % 26f;

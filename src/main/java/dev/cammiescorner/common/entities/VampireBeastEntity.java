@@ -1,12 +1,9 @@
 package dev.cammiescorner.common.entities;
 
-import dev.cammiescorner.common.Utils;
 import dev.cammiescorner.common.entities.ai.VampireDrinkAndAttackGoal;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModSoundEvents;
 import dev.cammiescorner.common.registries.ModStatusEffects;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -100,20 +97,15 @@ public class VampireBeastEntity extends BeastEntity {
 
 	@Override
 	public boolean canTarget(LivingEntity target) {
-		boolean isVisible = target.getComponent(ModComponents.VISIBLE_TO_SUPERNATURAL).isVisible();
 		boolean shouldTarget = (target.getComponent(ModComponents.BLOOD).getBlood() > 0 || target.equals(getAttacker()));
 
-		return super.canTarget(target) && isVisible && shouldTarget;
+		return super.canTarget(target) && shouldTarget;
 	}
 
 	@Override
 	public void addExtraAttackEffects(LivingEntity target) {
 		DamageSource source = getDamageSources().mobAttack(this);
 		heal(target.modifyAppliedDamage(source, target.applyArmorToDamage(source, (float) getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE))));
-	}
-
-	public boolean isWeakTo(DamageSource source) {
-		return source.getSource() instanceof VampireBeastEntity || source.isIn(DamageTypeTags.IS_FIRE) || source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) || (source.getWeaponStack() != null && EnchantmentHelper.getLevel(Utils.registryEntry(Enchantments.SMITE, getWorld()), source.getWeaponStack()) > 0);
 	}
 
 	public boolean canReachTarget(@NotNull LivingEntity target) {

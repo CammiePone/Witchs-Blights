@@ -11,6 +11,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class VampireBeastEntityRenderer extends MobEntityRenderer<VampireBeastEntity, VampireBeastEntityModel> {
+	private static final Identifier VAMPIRE_TEXTURE = WitchsBlights.id("textures/entity/vampire_beast.png");
+
 	public VampireBeastEntityRenderer(EntityRendererFactory.Context context) {
 		super(context, new VampireBeastEntityModel(MinecraftClient.getInstance().getEntityModelLoader().getModelPart(VampireBeastEntityModel.MODEL_LAYER)), 0.65f);
 	}
@@ -27,6 +29,6 @@ public class VampireBeastEntityRenderer extends MobEntityRenderer<VampireBeastEn
 
 	@Override
 	public Identifier getTexture(VampireBeastEntity entity) {
-		return WitchsBlights.id("textures/entity/vampire_beast.png");
+		return VAMPIRE_TEXTURE;
 	}
 }
