@@ -51,6 +51,7 @@
 
 	"block.witchsblights.bed.is_not_day": "You can only sleep during the day.",
 
+	"witchsblights.config.twoEyeBlinking.name": "Two eyes blink when transformed",
 	"witchsblights.config.stageOneCurseDuration.name": "Duration of curses at Stage 1",
 	"witchsblights.config.stageOneCurseUnit.name": "Unit of time for curses at Stage 1",
 	"witchsblights.config.stageTwoCurseDuration.name": "Duration of curses at Stage 2",

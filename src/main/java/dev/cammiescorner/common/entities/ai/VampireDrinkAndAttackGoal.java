@@ -42,7 +42,7 @@ public class VampireDrinkAndAttackGoal extends MeleeAttackGoal {
 
 	@Override
 	protected int getMaxCooldown() {
-		return getTickCount(50);
+		return getTickCount(30);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package dev.cammiescorner.common.entities;
 
 import dev.cammiescorner.common.Utils;
+import dev.cammiescorner.common.registries.ModParticles;
 import dev.cammiescorner.common.registries.ModSoundEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -109,9 +110,12 @@ public abstract class BeastEntity extends HostileEntity {
 	public boolean tryAttack(Entity target) {
 		boolean succeeds = super.tryAttack(target);
 
-		if(target instanceof LivingEntity livingTarget && succeeds) {
+		if(target instanceof LivingEntity livingTarget && succeeds && getWorld() instanceof ServerWorld world) {
 			addExtraAttackEffects(livingTarget);
 			livingTarget.playSound(ModSoundEvents.BEAST_SCRATCH.get());
+
+			for(int count = 0; count < random.nextBetween(8, 16); count++)
+				world.spawnParticles(ModParticles.BLOOD.get(), target.getX(), target.getY() + (target.getHeight() * 0.5f) + random.nextFloat(), target.getZ(), 0, 0, 0, 0, 0);
 		}
 
 		return succeeds;
@@ -125,7 +129,7 @@ public abstract class BeastEntity extends HostileEntity {
 			Iterator<BlockPos.Mutable> iterator = BlockPos.iterateInSquare(getBlockPos().up(2), 1, Direction.WEST, Direction.SOUTH).iterator();
 			boolean shouldSneak = false;
 
-			while(!shouldSneak && iterator.hasNext()) {
+			while(!shouldSneak && iterator.hasNext() && horizontalCollision) {
 				BlockPos.Mutable mutable = iterator.next();
 				shouldSneak = !getWorld().getBlockState(mutable).canPathfindThrough(NavigationType.LAND);
 			}

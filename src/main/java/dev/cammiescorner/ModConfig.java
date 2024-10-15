@@ -33,6 +33,7 @@ import dev.cammiescorner.common.Utils;
 @Config(
 		value = WitchsBlights.MOD_ID,
 		categories = {
+				ModConfig.Client.class,
 				ModConfig.Curses.class,
 				ModConfig.AllBeasts.class,
 				ModConfig.VampireBeast.class,
@@ -40,6 +41,16 @@ import dev.cammiescorner.common.Utils;
 		}
 )
 public class ModConfig {
+	@Category(value = "Client")
+	public static class Client {
+		@ConfigEntry(
+				type = EntryType.BOOLEAN,
+				id = "twoEyeBlinking",
+				translation = "witchsblights.config.twoEyeBlinking.name"
+		)
+		public static boolean twoEyeBlinking = false;
+	}
+
 	@Category(value = "Curses")
 	public static class Curses {
 		@ConfigEntry(

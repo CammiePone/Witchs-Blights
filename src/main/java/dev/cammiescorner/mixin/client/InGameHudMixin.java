@@ -1,6 +1,7 @@
 package dev.cammiescorner.mixin.client;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import dev.cammiescorner.ModConfig;
 import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.client.WitchsBlightsClient;
 import dev.cammiescorner.common.components.TransformationComponent;
@@ -67,7 +68,7 @@ public class InGameHudMixin {
 	}
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	private void unrenderHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
+	private void blinkingAnimAndNoMoreHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
 		PlayerEntity player = client.player;
 		float tickDelta = tickCounter.getTickDelta(false);
 
@@ -75,7 +76,7 @@ public class InGameHudMixin {
 			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 			if(component.isTransformed()) {
-				WitchsBlightsClient.renderOverlay(context, WitchsBlightsClient.TRANSFORMED_WAKE, 1f);
+				WitchsBlightsClient.renderOverlay(context, ModConfig.Client.twoEyeBlinking ? WitchsBlightsClient.TRANSFORMED_WAKE_TWO : WitchsBlightsClient.TRANSFORMED_WAKE_ONE, 1f);
 				WitchsBlightsClient.renderOverlay(context, WitchsBlightsClient.TRANSFORMED_BLINK, (float) (1f - Math.max(0, Math.sin((player.age + tickDelta) * 0.1))));
 
 				info.cancel();

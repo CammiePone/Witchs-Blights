@@ -9,24 +9,31 @@ import dev.cammiescorner.common.components.TransformationComponent;
 import dev.cammiescorner.common.registries.ModBlocks;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModEntities;
+import dev.cammiescorner.common.registries.ModParticles;
+import dev.upcraft.sparkweave.api.client.event.RegisterParticleFactoriesEvent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.*;
+import net.minecraft.client.particle.ParticleTextureSheet;
+import net.minecraft.client.particle.SpriteBillboardParticle;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 public class WitchsBlightsClient implements ClientModInitializer {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
-	public static final Identifier TRANSFORMED_WAKE = WitchsBlights.id("textures/gui/hud/transformed_wake.png");
+	public static final Identifier TRANSFORMED_WAKE_ONE = WitchsBlights.id("textures/gui/hud/transformed_wake_one.png");
+	public static final Identifier TRANSFORMED_WAKE_TWO = WitchsBlights.id("textures/gui/hud/transformed_wake_two.png");
 	public static final Identifier TRANSFORMED_BLINK = WitchsBlights.id("textures/gui/hud/transformed_blink.png");
 	public static final Identifier URGING = WitchsBlights.id("textures/gui/hud/urging_overlay.png");
 
@@ -38,12 +45,50 @@ public class WitchsBlightsClient implements ClientModInitializer {
 		EntityModelLayerRegistry.registerModelLayer(VampireBeastEntityModel.MODEL_LAYER, VampireBeastEntityModel::getTexturedModelData);
 		EntityRendererRegistry.register(ModEntities.VAMPIRE_BEAST.get(), VampireBeastEntityRenderer::new);
 
+		RegisterParticleFactoriesEvent.EVENT.register(event -> {
+			event.registerSprite(ModParticles.BLOOD, (parameters, world, x, y, z, velocityX, velocityY, velocityZ) -> new SpriteBillboardParticle(world, x, y, z, velocityX, velocityY, velocityZ) {
+				@Override
+				public void tick() {
+					gravityStrength = 1f;
+					super.tick();
+				}
+
+				@Override
+				public ParticleTextureSheet getType() {
+					return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
+				}
+			});
+
+			event.registerSpriteSet(ModParticles.BITING, spriteProvider -> (parameters, world, x, y, z, velocityX, velocityY, velocityZ) -> {
+				SpriteBillboardParticle particle = new SpriteBillboardParticle(world, x, y, z) {
+					@Override
+					public void tick() {
+						setSpriteForAge(spriteProvider);
+
+						if(age++ > maxAge)
+							markDead();
+					}
+
+					@Override
+					public ParticleTextureSheet getType() {
+						return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE;
+					}
+				};
+
+				particle.setMaxAge(10);
+				particle.setSpriteForAge(spriteProvider);
+
+				return particle;
+			});
+		});
+
 		HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
 			PlayerEntity player = client.player;
+			World world = client.world;
 			float tickDelta = tickCounter.getTickDelta(false);
 			float urgingLookStrength = ModConfig.AllBeasts.urgingLookStrength;
 
-			if(player != null) {
+			if(player != null && world != null) {
 				TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 				if(!component.isTransformed() && urgingLookStrength > 0) {
@@ -74,6 +119,21 @@ public class WitchsBlightsClient implements ClientModInitializer {
 							player.setYaw(player.getYaw(tickDelta) + rotationStep.y);
 						}
 					}
+				}
+			}
+		});
+
+		ClientTickEvents.END_CLIENT_TICK.register(client1 -> {
+			PlayerEntity player = client.player;
+			World world = client.world;
+
+			if(!client.isPaused() && player != null && world != null) {
+				TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
+				LivingEntity target = component.getTarget();
+
+				if(target != null && !component.isTransformed() && component.getUrgingProgress() > 0 && player.age % 15 == 0) {
+					Vec3d particlePos = target.getPos().add(0, target.getHeight() * 1.25, 0);
+					world.addParticle(ModParticles.BITING.get(), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0);
 				}
 			}
 		});
