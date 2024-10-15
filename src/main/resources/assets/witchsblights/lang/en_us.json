@@ -30,11 +30,13 @@
 	"item.witchsblights.mistletoe": "Mistletoe",
 	"item.witchsblights.bundled_mistletoe": "Bundled Mistletoe",
 	"item.witchsblights.vampire_beast_spawn_egg": "Vampire Beast Spawn Egg",
+	"item.witchsblights.werewolf_beast_spawn_egg": "Werewolf Beast Spawn Egg",
 
 	"block.witchsblights.mistletoe": "Mistletoe",
 	"block.witchsblights.bundled_mistletoe": "Bundled Mistletoe",
 
 	"entity.witchsblights.vampire_beast": "Vampire Beast",
+	"entity.witchsblights.werewolf_beast": "Werewolf Beast",
 
 	"effect.witchsblights.sanguine_blight": "Sanguine Blight",
 	"effect.witchsblights.cursed_claws": "Cursed Claws",

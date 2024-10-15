@@ -19,4 +19,5 @@ public class ModItems {
 	public static final RegistrySupplier<Item> MISTLETOE = ITEMS.register("mistletoe", () -> new BlockItem(ModBlocks.MISTLETOE.get(), new Item.Settings()));
 	public static final RegistrySupplier<Item> BUNDLED_MISTLETOE = ITEMS.register("bundled_mistletoe", () -> new BlockItem(ModBlocks.BUNDLED_MISTLETOE.get(), new Item.Settings()));
 	public static final RegistrySupplier<Item> VAMPIRE_BEAST_EGG = ITEMS.register("vampire_beast_spawn_egg", () -> new SpawnEggItem(ModEntities.VAMPIRE_BEAST.get(), 0xb39e88, 0xe0d9c2, new Item.Settings()));
+	public static final RegistrySupplier<Item> WEREWOLF_BEAST_EGG = ITEMS.register("werewolf_beast_spawn_egg", () -> new SpawnEggItem(ModEntities.WEREWOLF_BEAST.get(), 0x1c1711, 0x4c4033, new Item.Settings()));
 }
