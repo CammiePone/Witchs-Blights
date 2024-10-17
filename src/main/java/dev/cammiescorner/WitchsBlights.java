@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.DefaultedRegistry;
 import net.minecraft.registry.Registry;
@@ -84,7 +85,11 @@ public class WitchsBlights implements ModInitializer {
 			TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 
 			if(component.getTransformation().isIn(ModTags.DRINKS_BLOOD) && player.isSneaking()) {
+				if(!entity.getType().isIn(component.getTransformation().getTargets()))
+					player.addStatusEffect(new StatusEffectInstance(StatusEffects.HUNGER, 600));
+
 				player.getHungerManager().add(2, 0.2f);
+
 				return ActionResult.success(true);
 			}
 
