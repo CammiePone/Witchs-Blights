@@ -10,8 +10,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.MobNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.ai.pathing.SwimNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -40,12 +41,13 @@ public abstract class BeastEntity extends HostileEntity {
 	public static final TrackedData<Integer> ATTACK_COOLDOWN = DataTracker.registerData(BeastEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	private UUID ownerId = Utils.NIL_UUID;
 	protected final SwimNavigation waterNavigation;
-	protected final MobNavigation landNavigation;
+	protected final EntityNavigation defaultNavigation;
 
 	public BeastEntity(EntityType<? extends HostileEntity> entityType, World world) {
 		super(entityType, world);
 		this.waterNavigation = new SwimNavigation(this, world);
-		this.landNavigation = new MobNavigation(this, world);
+		this.defaultNavigation = navigation;
+		setPathfindingPenalty(PathNodeType.WATER, -1f);
 	}
 
 	public static DefaultAttributeContainer.Builder createBeastAttributes() {
@@ -86,6 +88,9 @@ public abstract class BeastEntity extends HostileEntity {
 
 	@Override
 	protected float getBaseMovementSpeedMultiplier() {
+		if(isTouchingWater())
+			return 0.5f;
+
 		return getTarget() != null && getTarget().isSprinting() ? 2f : 1f;
 	}
 
@@ -173,7 +178,7 @@ public abstract class BeastEntity extends HostileEntity {
 				setSwimming(true);
 			}
 			else {
-				navigation = landNavigation;
+				navigation = defaultNavigation;
 				setSwimming(false);
 			}
 		}
