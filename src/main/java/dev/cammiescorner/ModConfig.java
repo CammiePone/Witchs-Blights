@@ -106,6 +106,13 @@ public class ModConfig {
 		public static int untransformIfNoTargetTicks = 100;
 
 		@ConfigEntry(
+				type = EntryType.INTEGER,
+				id = "untransformIfHasntAttackedTicks",
+				translation = "witchsblights.config.untransformIfHasntAttackedTicks.name"
+		)
+		public static int untransformIfHasntAttackedTicks = 600;
+
+		@ConfigEntry(
 				type = EntryType.FLOAT,
 				id = "urgingLookStrength",
 				translation = "witchsblights.config.urgingLookStrength.name"
