@@ -2,12 +2,18 @@ package dev.cammiescorner.common;
 
 import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.ModConfig;
+import dev.cammiescorner.common.entities.VampireBeastEntity;
+import dev.cammiescorner.common.entities.WerewolfBeastEntity;
 import dev.cammiescorner.common.registries.ModStatusEffects;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
@@ -42,6 +48,10 @@ public class Utils {
 
 	public static <T> RegistryEntry.Reference<T> registryEntry(RegistryKey<T> key, World world) {
 		return world.getRegistryManager().get(key.getRegistryRef()).entryOf(key);
+	}
+
+	public static boolean isTransformationWeakTo(DamageSource source, World world) {
+		return source.getSource() instanceof VampireBeastEntity || source.getSource() instanceof WerewolfBeastEntity || source.isIn(DamageTypeTags.IS_FIRE) || source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) || (source.getWeaponStack() != null && EnchantmentHelper.getLevel(Utils.registryEntry(Enchantments.SMITE, world), source.getWeaponStack()) > 0);
 	}
 
 	public enum DurationUnits {

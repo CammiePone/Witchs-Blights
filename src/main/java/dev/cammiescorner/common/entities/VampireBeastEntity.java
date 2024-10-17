@@ -1,5 +1,6 @@
 package dev.cammiescorner.common.entities;
 
+import dev.cammiescorner.common.Utils;
 import dev.cammiescorner.common.entities.ai.VampireDrinkAndAttackGoal;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModSoundEvents;
@@ -89,7 +90,7 @@ public class VampireBeastEntity extends BeastEntity {
 		if(source.isIn(DamageTypeTags.IS_FALL))
 			return false;
 
-		if(!isWeakTo(source))
+		if(!Utils.isTransformationWeakTo(source, getWorld()))
 			amount *= 0.55f;
 
 		return super.damage(source, amount);

@@ -119,7 +119,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 		if(source.isIn(DamageTypeTags.IS_FALL))
 			return false;
 
-		if(!isWeakTo(source))
+		if(!Utils.isTransformationWeakTo(source, getWorld()))
 			amount *= 0.1f;
 
 		return super.damage(source, amount);

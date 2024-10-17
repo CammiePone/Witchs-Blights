@@ -6,8 +6,6 @@ import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModParticles;
 import dev.cammiescorner.common.registries.ModSoundEvents;
 import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -22,7 +20,6 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
@@ -216,10 +213,6 @@ public abstract class BeastEntity extends HostileEntity {
 
 	protected boolean canChangeIntoPose(EntityPose pose) {
 		return getWorld().isSpaceEmpty(this, getBaseDimensions(pose).getBoxAt(getPos()).contract(1.0E-7));
-	}
-
-	public boolean isWeakTo(DamageSource source) {
-		return source.getSource() instanceof VampireBeastEntity || source.getSource() instanceof WerewolfBeastEntity || source.isIn(DamageTypeTags.IS_FIRE) || source.isIn(DamageTypeTags.BYPASSES_RESISTANCE) || (source.getWeaponStack() != null && EnchantmentHelper.getLevel(Utils.registryEntry(Enchantments.SMITE, getWorld()), source.getWeaponStack()) > 0);
 	}
 
 	public boolean fitsInOneBlockGap() {
