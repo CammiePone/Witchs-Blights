@@ -44,6 +44,9 @@
 		"fabricloader": ">=0.16.5",
 		"minecraft": "~1.21.1",
 		"java": ">=21",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"cardinal-components-entity": ">=6.1.1",
+		"resourcefulconfig": ">=3.0.4",
+		"sparkweave": ">=0.503.1"
 	}
 }

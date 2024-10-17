@@ -4,6 +4,7 @@
 		"minecraft:player",
 		"minecraft:villager",
 		"minecraft:wandering_trader",
-		"#minecraft:illager"
+		"#minecraft:illager",
+		"#c:animals"
 	]
 }
