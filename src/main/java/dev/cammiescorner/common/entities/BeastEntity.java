@@ -10,7 +10,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.entity.ai.pathing.SwimNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -37,9 +39,13 @@ public abstract class BeastEntity extends HostileEntity {
 	public static final TrackedData<Boolean> HUNTING = DataTracker.registerData(BeastEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 	public static final TrackedData<Integer> ATTACK_COOLDOWN = DataTracker.registerData(BeastEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	private UUID ownerId = Utils.NIL_UUID;
+	protected final SwimNavigation waterNavigation;
+	protected final MobNavigation landNavigation;
 
 	public BeastEntity(EntityType<? extends HostileEntity> entityType, World world) {
 		super(entityType, world);
+		this.waterNavigation = new SwimNavigation(this, world);
+		this.landNavigation = new MobNavigation(this, world);
 	}
 
 	public static DefaultAttributeContainer.Builder createBeastAttributes() {
@@ -160,6 +166,20 @@ public abstract class BeastEntity extends HostileEntity {
 	}
 
 	@Override
+	public void updateSwimming() {
+		if(!getWorld().isClient()) {
+			if(canMoveVoluntarily() && isTouchingWater() && isTargetingUnderwater()) {
+				navigation = waterNavigation;
+				setSwimming(true);
+			}
+			else {
+				navigation = landNavigation;
+				setSwimming(false);
+			}
+		}
+	}
+
+	@Override
 	public void writeCustomDataToNbt(NbtCompound nbt) {
 		super.writeCustomDataToNbt(nbt);
 		nbt.putBoolean("IsHunting", isHunting());
@@ -175,6 +195,10 @@ public abstract class BeastEntity extends HostileEntity {
 		setAttackCooldown(nbt.getInt("AttackCooldown"));
 		ownerId = nbt.containsUuid("Owner") ? nbt.getUuid("Owner") : Utils.NIL_UUID;
 		setPose(EntityPose.values()[nbt.getInt("PoseIndex")]);
+	}
+
+	boolean isTargetingUnderwater() {
+		return getTarget() != null && getTarget().isTouchingWater();
 	}
 
 	public ServerPlayerEntity getOwner() {

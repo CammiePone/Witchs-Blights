@@ -58,9 +58,10 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 						if(!isUrging)
 							startUrging(target);
 
-						if(getUrgingProgress() >= 1)
+						if(getUrgingProgress() >= 1) {
 							transformation.transform(serverPlayer, target);
-					}
+							noTargetTimer = ModConfig.AllBeasts.untransformIfNoTargetTicks;
+						}					}
 				}
 				else if(isUrging)
 					stopUrging();
@@ -72,10 +73,10 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 						return;
 					}
 
-					if(thaBeast.getTarget() != null && thaBeast.age - thaBeast.getLastAttackTime() <= ModConfig.AllBeasts.untransformIfHasntAttackedTicks)
-						noTargetTimer = ModConfig.AllBeasts.untransformIfNoTargetTicks;
-					else if(noTargetTimer-- <= 0)
+					if(noTargetTimer-- <= 0 || thaBeast.age - thaBeast.getLastAttackTime() >= ModConfig.AllBeasts.untransformIfHasntAttackedTicks)
 						transformation.untransform(serverPlayer);
+					else if(thaBeast.getTarget() != null)
+						noTargetTimer = ModConfig.AllBeasts.untransformIfNoTargetTicks;
 				}
 				else
 					transformation.untransform(serverPlayer);

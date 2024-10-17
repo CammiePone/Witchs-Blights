@@ -51,10 +51,10 @@ public class WerewolfBeastEntity extends BeastEntity {
 
 	@Override
 	protected void initGoals() {
-		goalSelector.add(7, new LookAtEntityGoal(this, PlayerEntity.class, 8f));
-		goalSelector.add(8, new LookAroundGoal(this));
-		goalSelector.add(2, new MeleeAttackGoal(this, 3, false));
-		goalSelector.add(8, new WanderAroundGoal(this, 1));
+		goalSelector.add(1, new MeleeAttackGoal(this, 3, false));
+		goalSelector.add(2, new LookAtEntityGoal(this, PlayerEntity.class, 8f));
+		goalSelector.add(3, new LookAroundGoal(this));
+		goalSelector.add(3, new WanderAroundGoal(this, 1));
 		targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, false, entity -> !entity.hasStatusEffect(ModStatusEffects.CURSED_CLAWS.holder()) || entity.equals(getAttacker())));
 		targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
 		targetSelector.add(3, new ActiveTargetGoal<>(this, IllagerEntity.class, false));
