@@ -20,8 +20,9 @@
 		"defaultRequire": 1
 	},
 	"client": [
-		"client.InGameHudMixin",
 		"client.HeldItemRendererMixin",
+		"client.InGameHudMixin",
+		"client.KeyBindingMixin",
 		"client.LivingEntityRendererMixin"
 	]
 }
