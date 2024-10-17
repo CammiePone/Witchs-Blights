@@ -72,7 +72,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 						return;
 					}
 
-					if(thaBeast.getTarget() != null && world.getTime() - thaBeast.getLastAttackTime() <= ModConfig.AllBeasts.untransformIfHasntAttackedTicks)
+					if(thaBeast.getTarget() != null && thaBeast.age - thaBeast.getLastAttackTime() <= ModConfig.AllBeasts.untransformIfHasntAttackedTicks)
 						noTargetTimer = ModConfig.AllBeasts.untransformIfNoTargetTicks;
 					else if(noTargetTimer-- <= 0)
 						transformation.untransform(serverPlayer);
