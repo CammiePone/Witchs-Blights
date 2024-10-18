@@ -8,9 +8,10 @@ import dev.cammiescorner.common.components.TransformationComponent;
 import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.entities.VampireBeastEntity;
 import dev.cammiescorner.common.registries.*;
+import dev.upcraft.sparkweave.api.entrypoint.MainEntryPoint;
+import dev.upcraft.sparkweave.api.platform.ModContainer;
 import dev.upcraft.sparkweave.api.platform.services.RegistryService;
 import dev.upcraft.sparkweave.api.scheduler.Tasks;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
@@ -45,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class WitchsBlights implements ModInitializer {
+public class WitchsBlights implements MainEntryPoint {
 	public static final String MOD_ID = "witchsblights";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
@@ -55,7 +56,7 @@ public class WitchsBlights implements ModInitializer {
 	public static final Configurator CONFIGURATOR = new Configurator(MOD_ID);
 
 	@Override
-	public void onInitialize() {
+	public void onInitialize(ModContainer mod) {
 		CONFIGURATOR.register(ModConfig.class);
 		RegistryService registryService = RegistryService.get();
 

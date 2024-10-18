@@ -16,12 +16,6 @@
 	"icon": "assets/witchsblights/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"dev.cammiescorner.WitchsBlights"
-		],
-		"client": [
-			"dev.cammiescorner.client.WitchsBlightsClient"
-		],
 		"cardinal-components": [
 			"dev.cammiescorner.common.registries.ModComponents"
 		]
@@ -41,10 +35,10 @@
 		]
 	},
 	"depends": {
-		"fabricloader": ">=0.16.5",
+		"fabricloader": ">=0.16.7",
 		"minecraft": "~1.21.1",
 		"java": ">=21",
-		"fabric-api": "*",
+		"fabric-api": ">=0.106.0-1.21.1",
 		"cardinal-components-entity": ">=6.1.1",
 		"resourcefulconfig": ">=3.0.4",
 		"sparkweave": ">=0.503.1"

@@ -13,7 +13,8 @@ import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModEntities;
 import dev.cammiescorner.common.registries.ModParticles;
 import dev.upcraft.sparkweave.api.client.event.RegisterParticleFactoriesEvent;
-import net.fabricmc.api.ClientModInitializer;
+import dev.upcraft.sparkweave.api.entrypoint.ClientEntryPoint;
+import dev.upcraft.sparkweave.api.platform.ModContainer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -32,7 +33,7 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class WitchsBlightsClient implements ClientModInitializer {
+public class WitchsBlightsClient implements ClientEntryPoint {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	public static final Identifier TRANSFORMED_WAKE_ONE = WitchsBlights.id("textures/gui/hud/transformed_wake_one.png");
 	public static final Identifier TRANSFORMED_WAKE_TWO = WitchsBlights.id("textures/gui/hud/transformed_wake_two.png");
@@ -40,7 +41,7 @@ public class WitchsBlightsClient implements ClientModInitializer {
 	public static final Identifier URGING = WitchsBlights.id("textures/gui/hud/urging_overlay.png");
 
 	@Override
-	public void onInitializeClient() {
+	public void onInitializeClient(ModContainer mod) {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.MISTLETOE.get(), ModBlocks.BUNDLED_MISTLETOE.get());
 //		ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null && pos != null ? BiomeColors.getFoliageColor(world, pos) : FoliageColors.getDefaultColor(), ModBlocks.MISTLETOE.get());
 
@@ -63,14 +64,18 @@ public class WitchsBlightsClient implements ClientModInitializer {
 				}
 			});
 
-			event.registerSpriteSet(ModParticles.BITING, spriteProvider -> (parameters, world, x, y, z, velocityX, velocityY, velocityZ) -> {
-				SpriteBillboardParticle particle = new SpriteBillboardParticle(world, x, y, z) {
+			event.registerSpriteSet(ModParticles.BITING, spriteProvider -> (parameters, world, x, y, z, velX, velY, velZ) -> {
+				SpriteBillboardParticle particle = new SpriteBillboardParticle(world, x, y, z, velX, velY, velZ) {
+					{
+						this.velocityY = velY;
+						this.velocityX = velX;
+						this.velocityZ = velZ;
+					}
+
 					@Override
 					public void tick() {
 						setSpriteForAge(spriteProvider);
-
-						if(age++ > maxAge)
-							markDead();
+						super.tick();
 					}
 
 					@Override
@@ -127,16 +132,17 @@ public class WitchsBlightsClient implements ClientModInitializer {
 			}
 		});
 
-		ClientTickEvents.END_CLIENT_TICK.register(client1 -> {
+		ClientTickEvents.END_WORLD_TICK.register(world -> {
 			PlayerEntity player = client.player;
-			World world = client.world;
 
-			if(!client.isPaused() && player != null && world != null) {
+			if(!client.isPaused() && player != null) {
 				TransformationComponent component = player.getComponent(ModComponents.TRANSFORMATION);
 				LivingEntity target = component.getTarget();
 
 				if(target != null && !component.isTransformed() && component.getUrgingProgress() > 0 && player.age % 15 == 0) {
-					Vec3d particlePos = target.getPos().add(0, target.getHeight() * 1.25, 0);
+					Vec3d directionToPlayer = player.getPos().subtract(target.getPos()).normalize().multiply(target.getWidth());
+					Vec3d particlePos = target.getPos().add(0, target.getHeight() * 0.75, 0).add(directionToPlayer.x, 0, directionToPlayer.z);
+
 					world.addParticle(ModParticles.BITING.get(), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0);
 				}
 			}
