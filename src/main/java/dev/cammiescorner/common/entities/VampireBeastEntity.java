@@ -200,7 +200,7 @@ public class VampireBeastEntity extends BeastEntity {
 
 				VampireBeastEntity.this.setVelocity(vec3d.add((new Vec3d(accelerationX, accelerationY, accelerationZ)).subtract(vec3d).multiply(0.2)));
 
-				if(age % 35 == 0 && isFlying())
+				if(age % 35 == 0 && isFlying() && !isSubmergedInWater())
 					playSound(ModSoundEvents.VAMPIRE_WINGS.get(), 0.5f, getSoundPitch());
 			}
 		}

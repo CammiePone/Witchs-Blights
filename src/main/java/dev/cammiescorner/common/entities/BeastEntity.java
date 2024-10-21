@@ -10,7 +10,6 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -20,6 +19,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
@@ -41,11 +41,12 @@ public abstract class BeastEntity extends HostileEntity {
 
 	public BeastEntity(EntityType<? extends HostileEntity> entityType, World world) {
 		super(entityType, world);
-		setPathfindingPenalty(PathNodeType.WATER, -1f);
+		getNavigation().setCanSwim(true);
 	}
 
 	public static DefaultAttributeContainer.Builder createBeastAttributes() {
 		return HostileEntity.createHostileAttributes()
+				.add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 0.75)
 				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, 40);
@@ -138,9 +139,14 @@ public abstract class BeastEntity extends HostileEntity {
 	public void tickMovement() {
 		super.tickMovement();
 
-		if(!getWorld().isClient() && isSneaking() != shouldSneak() && canChangeIntoPose(isSneaking() ? EntityPose.STANDING : EntityPose.CROUCHING)) {
-			setSneaking(shouldSneak());
-			setPose(isSneaking() ? EntityPose.CROUCHING : EntityPose.STANDING);
+		if(!getWorld().isClient()) {
+			if(isSneaking() != shouldSneak() && canChangeIntoPose(isSneaking() ? EntityPose.STANDING : EntityPose.CROUCHING)) {
+				setSneaking(shouldSneak());
+				setPose(isSneaking() ? EntityPose.CROUCHING : EntityPose.STANDING);
+			}
+
+			if(isTouchingWater() && getFluidHeight(FluidTags.WATER) > getSwimHeight() && (getTarget() == null || !getTarget().isSubmergedInWater()) && getRandom().nextFloat() < 0.8f)
+				getJumpControl().setActive();
 		}
 	}
 
@@ -167,10 +173,6 @@ public abstract class BeastEntity extends HostileEntity {
 		setAttackCooldown(nbt.getInt("AttackCooldown"));
 		ownerId = nbt.containsUuid("Owner") ? nbt.getUuid("Owner") : Utils.NIL_UUID;
 		setPose(EntityPose.values()[nbt.getInt("PoseIndex")]);
-	}
-
-	boolean isTargetingUnderwater() {
-		return getTarget() != null && getTarget().isTouchingWater();
 	}
 
 	public ServerPlayerEntity getOwner() {
