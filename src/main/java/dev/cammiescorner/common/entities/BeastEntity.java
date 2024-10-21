@@ -26,7 +26,6 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -216,12 +215,9 @@ public abstract class BeastEntity extends HostileEntity {
 		if(!horizontalCollision)
 			return false;
 
-		Stream<BlockPos.Mutable> posToCheck = null;
 		int sneakingHeight = MathHelper.ceil(getBaseDimensions(EntityPose.CROUCHING).height());
+		Stream<BlockPos> posToCheck = StreamSupport.stream(BlockPos.iterate(getBlockPos().add(-1, 0, -1), getBlockPos().add(1, sneakingHeight - 1, 1)).spliterator(), false);
 
-		for(int i = 0; i < sneakingHeight; i++)
-			posToCheck = StreamSupport.stream(BlockPos.iterateInSquare(getBlockPos().up(i), 1, Direction.WEST, Direction.SOUTH).spliterator(), false);
-
-		return posToCheck != null && posToCheck.allMatch(mutable -> getWorld().getBlockState(mutable).canPathfindThrough(NavigationType.LAND));
+		return posToCheck.allMatch(mutable -> getWorld().getBlockState(mutable).canPathfindThrough(NavigationType.LAND));
 	}
 }
