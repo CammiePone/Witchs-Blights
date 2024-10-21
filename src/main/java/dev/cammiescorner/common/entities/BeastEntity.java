@@ -1,6 +1,5 @@
 package dev.cammiescorner.common.entities;
 
-import com.google.common.collect.Iterators;
 import dev.cammiescorner.common.Utils;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModParticles;
@@ -10,10 +9,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
-import net.minecraft.entity.ai.pathing.SwimNavigation;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -30,29 +27,27 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.UUID;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public abstract class BeastEntity extends HostileEntity {
 	public static final TrackedData<Boolean> HUNTING = DataTracker.registerData(BeastEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 	public static final TrackedData<Integer> ATTACK_COOLDOWN = DataTracker.registerData(BeastEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	private UUID ownerId = Utils.NIL_UUID;
-	protected final SwimNavigation waterNavigation;
-	protected final EntityNavigation defaultNavigation;
 
 	public BeastEntity(EntityType<? extends HostileEntity> entityType, World world) {
 		super(entityType, world);
-		this.waterNavigation = new SwimNavigation(this, world);
-		this.defaultNavigation = navigation;
 		setPathfindingPenalty(PathNodeType.WATER, -1f);
 	}
 
 	public static DefaultAttributeContainer.Builder createBeastAttributes() {
 		return HostileEntity.createHostileAttributes()
-				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 100)
+				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, 40);
 	}
@@ -144,22 +139,9 @@ public abstract class BeastEntity extends HostileEntity {
 	public void tickMovement() {
 		super.tickMovement();
 
-		if(!getWorld().isClient()) {
-			Iterator<BlockPos.Mutable> iterator = BlockPos.iterateInSquare(getBlockPos().up(2), 1, Direction.WEST, Direction.SOUTH).iterator();
-			boolean shouldSneak = false;
-
-			if(fitsInOneBlockGap())
-				iterator = Iterators.concat(iterator, BlockPos.iterateInSquare(getBlockPos().up(1), 1, Direction.WEST, Direction.SOUTH).iterator());
-
-			while(!shouldSneak && iterator.hasNext() && horizontalCollision) {
-				BlockPos.Mutable mutable = iterator.next();
-				shouldSneak = !getWorld().getBlockState(mutable).canPathfindThrough(NavigationType.LAND);
-			}
-
-			if(isSneaking() != shouldSneak && canChangeIntoPose(isSneaking() ? EntityPose.STANDING : EntityPose.CROUCHING)) {
-				setSneaking(shouldSneak);
-				setPose(isSneaking() ? EntityPose.CROUCHING : EntityPose.STANDING);
-			}
+		if(!getWorld().isClient() && isSneaking() != shouldSneak() && canChangeIntoPose(isSneaking() ? EntityPose.STANDING : EntityPose.CROUCHING)) {
+			setSneaking(shouldSneak());
+			setPose(isSneaking() ? EntityPose.CROUCHING : EntityPose.STANDING);
 		}
 	}
 
@@ -168,20 +150,6 @@ public abstract class BeastEntity extends HostileEntity {
 		boolean isVisible = target.getComponent(ModComponents.VISIBLE_TO_SUPERNATURAL).isVisible();
 
 		return super.canTarget(target) && isVisible;
-	}
-
-	@Override
-	public void updateSwimming() {
-		if(!getWorld().isClient()) {
-			if(canMoveVoluntarily() && isTouchingWater() && isTargetingUnderwater()) {
-				navigation = waterNavigation;
-				setSwimming(true);
-			}
-			else {
-				navigation = defaultNavigation;
-				setSwimming(false);
-			}
-		}
 	}
 
 	@Override
@@ -244,7 +212,16 @@ public abstract class BeastEntity extends HostileEntity {
 		return getWorld().isSpaceEmpty(this, getBaseDimensions(pose).getBoxAt(getPos()).contract(1.0E-7));
 	}
 
-	public boolean fitsInOneBlockGap() {
-		return false;
+	public boolean shouldSneak() {
+		if(!horizontalCollision)
+			return false;
+
+		Stream<BlockPos.Mutable> posToCheck = null;
+		int sneakingHeight = MathHelper.ceil(getBaseDimensions(EntityPose.CROUCHING).height());
+
+		for(int i = 0; i < sneakingHeight; i++)
+			posToCheck = StreamSupport.stream(BlockPos.iterateInSquare(getBlockPos().up(i), 1, Direction.WEST, Direction.SOUTH).spliterator(), false);
+
+		return posToCheck != null && posToCheck.allMatch(mutable -> getWorld().getBlockState(mutable).canPathfindThrough(NavigationType.LAND));
 	}
 }

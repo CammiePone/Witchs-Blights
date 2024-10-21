@@ -38,6 +38,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 
 	public static DefaultAttributeContainer.Builder createWerewolfBeastAttributes() {
 		return BeastEntity.createBeastAttributes()
+				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 8);
 	}
@@ -78,8 +79,10 @@ public class WerewolfBeastEntity extends BeastEntity {
 	public void tick() {
 		super.tick();
 
-		if(!getWorld().isClient() && !isInPose(EntityPose.CROUCHING))
+		if(!getWorld().isClient() && !isSneaking()) {
 			setClimbing(horizontalCollision);
+			setPose(EntityPose.STANDING);
+		}
 	}
 
 	@Override
@@ -106,7 +109,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 
 	@Override
 	protected EntityDimensions getBaseDimensions(EntityPose pose) {
-		return pose == EntityPose.STANDING ? EntityDimensions.changing(0.8f, 2.7f).withEyeHeight(2.35f) : EntityDimensions.changing(0.8f, 1f).withEyeHeight(1.75f);
+		return pose == EntityPose.STANDING ? EntityDimensions.changing(0.8f, 2.7f).withEyeHeight(2.35f) : EntityDimensions.changing(0.8f, 1f).withEyeHeight(0.8f);
 	}
 
 	@Override
@@ -123,11 +126,6 @@ public class WerewolfBeastEntity extends BeastEntity {
 			amount *= 0.1f;
 
 		return super.damage(source, amount);
-	}
-
-	@Override
-	public boolean fitsInOneBlockGap() {
-		return true;
 	}
 
 	@Override
