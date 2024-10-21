@@ -89,6 +89,7 @@ public class Transformation {
 			player.setInvulnerable(true);
 			player.setCameraEntity(beast);
 			component.setNoTargetTimer(100);
+			component.setInitiallyTransformedTime(world.getTime());
 			component.setTransformed(true);
 			world.sendEntityStatus(player, EntityStatuses.ADD_DEATH_PARTICLES);
 		}

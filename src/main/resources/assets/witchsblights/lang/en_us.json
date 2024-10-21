@@ -62,6 +62,8 @@
 	"witchsblights.config.stageThreeCurseUnit.name": "Unit of time for curses at Stage 3",
 	"witchsblights.config.untransformIfNoTargetTicks.name": "Ticks with no target before untransforming",
 	"witchsblights.config.untransformIfHasntAttackedTicks.name": "Ticks without attacking before untransforming",
+	"witchsblights.config.maximumTransformedTime.name": "Maximum time to be transformed",
+	"witchsblights.config.transformedTimeUnits.name": "Unit of time for transformed timer",
 	"witchsblights.config.urgingLookStrength.name": "Strength of urging rotating camera",
 	"witchsblights.config.baseVampireUrgingTicks.name": "Base vampire urging timer",
 	"witchsblights.config.baseVampireStageUrgingModifier.name": "Vampire urging modifier for curse stage",

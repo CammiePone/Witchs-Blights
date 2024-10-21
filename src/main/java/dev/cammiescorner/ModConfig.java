@@ -119,6 +119,20 @@ public class ModConfig {
 		)
 		@ConfigOption.Range(min = 0f, max = 100f)
 		public static float urgingLookStrength = 1f;
+
+		@ConfigEntry(
+				type = EntryType.LONG,
+				id = "maximumTransformedTime",
+				translation = "witchsblights.config.maximumTransformedTime.name"
+		)
+		public static long maximumTransformedTime = 2;
+
+		@ConfigEntry(
+				type = EntryType.ENUM,
+				id = "transformedTimeUnits",
+				translation = "witchsblights.config.transformedTimeUnits.name"
+		)
+		public static Utils.DurationUnits transformedTimeUnits = Utils.DurationUnits.MINUTES;
 	}
 
 	@Category(value = "Vampire Beast")

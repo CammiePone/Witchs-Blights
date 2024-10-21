@@ -36,6 +36,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 	protected boolean isTransformed;
 	protected boolean paused;
 	protected long startedUrging;
+	protected long initiallyTransformed;
 	public int noTargetTimer;
 
 	public TransformationComponent(PlayerEntity player) {
@@ -61,7 +62,8 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 						if(getUrgingProgress() >= 1) {
 							transformation.transform(serverPlayer, target);
 							noTargetTimer = ModConfig.AllBeasts.untransformIfNoTargetTicks;
-						}					}
+						}
+					}
 				}
 				else if(isUrging)
 					stopUrging();
@@ -73,7 +75,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 						return;
 					}
 
-					if(noTargetTimer-- <= 0 || thaBeast.age - thaBeast.getLastAttackTime() >= ModConfig.AllBeasts.untransformIfHasntAttackedTicks)
+					if(noTargetTimer-- <= 0 || thaBeast.age - thaBeast.getLastAttackTime() >= ModConfig.AllBeasts.untransformIfHasntAttackedTicks || (ModConfig.AllBeasts.maximumTransformedTime > 0 && world.getTime() - initiallyTransformed >= ModConfig.AllBeasts.maximumTransformedTime * ModConfig.AllBeasts.transformedTimeUnits.getMultiplier()))
 						transformation.untransform(serverPlayer);
 					else if(thaBeast.getTarget() != null)
 						noTargetTimer = ModConfig.AllBeasts.untransformIfNoTargetTicks;
@@ -92,6 +94,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 		isTransformed = tag.getBoolean("IsTransformed");
 		paused = tag.getBoolean("Paused");
 		startedUrging = tag.getLong("StartedUrging");
+		initiallyTransformed = tag.getLong("InitiallyTransformed");
 		noTargetTimer = tag.getInt("NoTargetTimer");
 	}
 
@@ -103,6 +106,7 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 		tag.putBoolean("IsTransformed", isTransformed);
 		tag.putBoolean("Paused", paused);
 		tag.putLong("StartedUrging", startedUrging);
+		tag.putLong("InitiallyTransformed", initiallyTransformed);
 		tag.putInt("NoTargetTimer", noTargetTimer);
 	}
 
@@ -169,6 +173,10 @@ public class TransformationComponent implements AutoSyncedComponent, ServerTicki
 
 	public void setNoTargetTimer(int timer) {
 		noTargetTimer = timer;
+	}
+
+	public void setInitiallyTransformedTime(long time) {
+		initiallyTransformed = time;
 	}
 
 	@Override
