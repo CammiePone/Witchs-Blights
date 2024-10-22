@@ -5,21 +5,26 @@ import dev.cammiescorner.common.entities.ai.VampireDrinkAndAttackGoal;
 import dev.cammiescorner.common.registries.ModComponents;
 import dev.cammiescorner.common.registries.ModSoundEvents;
 import dev.cammiescorner.common.registries.ModStatusEffects;
+import dev.cammiescorner.common.registries.ModTags;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.LookAroundGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.ai.pathing.PathNode;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.MathHelper;
@@ -48,8 +53,18 @@ public class VampireBeastEntity extends BeastEntity {
 		goalSelector.add(3, new LookAroundGoal(this));
 		goalSelector.add(3, new WanderAroundFarGoal(this, 1));
 		targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, false, entity -> !entity.hasStatusEffect(ModStatusEffects.SANGUINE_BLIGHT.holder()) || entity.equals(getAttacker())));
-		targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
-		targetSelector.add(3, new ActiveTargetGoal<>(this, IllagerEntity.class, false));
+
+		Registry<EntityType<?>> registry = getRegistryManager().get(RegistryKeys.ENTITY_TYPE);
+		RegistryKey<EntityType<?>> playerKey = registry.getKey(EntityType.PLAYER).orElseThrow();
+
+		registry.getEntryList(ModTags.VAMPIRE_BEAST_TARGETS).ifPresent(registryEntries -> registryEntries.forEach(entry -> {
+			if(entry.hasKeyAndValue() && !entry.matchesKey(playerKey)) {
+				EntityType<?> type = entry.value();
+
+				if(LivingEntity.class.isAssignableFrom(type.getBaseClass()))
+					targetSelector.add(3, new ActiveTargetGoal(this, type.getBaseClass(), false));
+			}
+		}));
 	}
 
 	@Override

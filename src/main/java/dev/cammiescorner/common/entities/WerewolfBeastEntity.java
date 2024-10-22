@@ -4,6 +4,7 @@ import dev.cammiescorner.ModConfig;
 import dev.cammiescorner.common.Utils;
 import dev.cammiescorner.common.registries.ModSoundEvents;
 import dev.cammiescorner.common.registries.ModStatusEffects;
+import dev.cammiescorner.common.registries.ModTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.MoveControl;
@@ -17,12 +18,12 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.IllagerEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.MathHelper;
@@ -44,7 +45,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 
 	public static DefaultAttributeContainer.Builder createWerewolfBeastAttributes() {
 		return BeastEntity.createBeastAttributes()
-				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16)
+				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 50)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2)
 				.add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 8);
 	}
@@ -63,9 +64,18 @@ public class WerewolfBeastEntity extends BeastEntity {
 		goalSelector.add(3, new LookAroundGoal(this));
 		goalSelector.add(3, new WanderAroundFarGoal(this, 1));
 		targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, false, entity -> !entity.hasStatusEffect(ModStatusEffects.CURSED_CLAWS.holder()) || entity.equals(getAttacker())));
-		targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, false));
-		targetSelector.add(3, new ActiveTargetGoal<>(this, IllagerEntity.class, false));
-		targetSelector.add(4, new ActiveTargetGoal<>(this, AnimalEntity.class, false));
+
+		Registry<EntityType<?>> registry = getRegistryManager().get(RegistryKeys.ENTITY_TYPE);
+		RegistryKey<EntityType<?>> playerKey = registry.getKey(EntityType.PLAYER).orElseThrow();
+
+		registry.getEntryList(ModTags.WEREWOLF_BEAST_TARGETS).ifPresent(registryEntries -> registryEntries.forEach(entry -> {
+			if(entry.hasKeyAndValue() && !entry.matchesKey(playerKey)) {
+				EntityType<?> type = entry.value();
+
+				if(LivingEntity.class.isAssignableFrom(type.getBaseClass()))
+					targetSelector.add(3, new ActiveTargetGoal(this, type.getBaseClass(), false));
+			}
+		}));
 	}
 
 	@Override
