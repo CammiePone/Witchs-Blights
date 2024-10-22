@@ -47,7 +47,7 @@ public abstract class BeastEntity extends HostileEntity {
 	public static DefaultAttributeContainer.Builder createBeastAttributes() {
 		return HostileEntity.createHostileAttributes()
 				.add(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY, 0.75)
-				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 64)
+				.add(EntityAttributes.GENERIC_FOLLOW_RANGE, 100)
 				.add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.15)
 				.add(EntityAttributes.GENERIC_MAX_HEALTH, 40);
 	}
@@ -57,6 +57,20 @@ public abstract class BeastEntity extends HostileEntity {
 		super.initDataTracker(builder);
 		builder.add(HUNTING, false);
 		builder.add(ATTACK_COOLDOWN, 0);
+	}
+
+	@Override
+	public void tick() {
+		if(!getWorld().isClient() && ownerId != Utils.NIL_UUID) {
+			ServerPlayerEntity owner = getOwner();
+
+			if(owner != null && owner.getCameraEntity() != this)
+				owner.setCameraEntity(this);
+			else if(owner == null)
+				kill();
+		}
+
+		super.tick();
 	}
 
 	@Override
