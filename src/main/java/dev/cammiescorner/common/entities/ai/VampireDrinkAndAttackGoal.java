@@ -7,6 +7,7 @@ import dev.cammiescorner.common.registries.ModSoundEvents;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Ownable;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.world.World;
 
@@ -71,6 +72,11 @@ public class VampireDrinkAndAttackGoal extends MeleeAttackGoal {
 		World world = target.getWorld();
 
 		if(vampireBeast.isAttacking()) {
+			ServerPlayerEntity owner = vampireBeast.getOwner();
+
+			if(owner != null)
+				owner.getHungerManager().add(2, 0.2f);
+
 			component.drainBlood(1, vampireBeast);
 			world.playSound(null, vampireBeast.getBlockPos(), ModSoundEvents.VAMPIRE_DRINK_BLOOD.get(), SoundCategory.HOSTILE, 1f, world.random.nextFloat() * 0.1f + 0.9f);
 			resetCooldown();

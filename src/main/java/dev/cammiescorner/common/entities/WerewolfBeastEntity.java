@@ -128,7 +128,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 		ServerPlayerEntity owner = getOwner();
 
 		if(owner != null)
-			owner.getHungerManager().add((int) other.getMaxHealth(), 2f);
+			owner.getHungerManager().add((int) other.getMaxHealth(), 0.8f);
 
 		return super.onKilledOther(world, other);
 	}
