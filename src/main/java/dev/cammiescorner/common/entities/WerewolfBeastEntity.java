@@ -95,8 +95,8 @@ public class WerewolfBeastEntity extends BeastEntity {
 	public void tick() {
 		super.tick();
 
-		if(!getWorld().isClient() && !isSneaking())
-			setClimbing(horizontalCollision);
+		if(!getWorld().isClient())
+			setClimbing(horizontalCollision && !isSneaking());
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class WerewolfBeastEntity extends BeastEntity {
 
 	@Override
 	protected EntityDimensions getBaseDimensions(EntityPose pose) {
-		return pose == EntityPose.STANDING ? EntityDimensions.changing(0.8f, 2.7f).withEyeHeight(2.35f) : EntityDimensions.changing(0.8f, 1f).withEyeHeight(0.8f);
+		return pose == EntityPose.STANDING ? EntityDimensions.changing(0.8f, 2.7f).withEyeHeight(2.35f) : EntityDimensions.changing(0.8f, 0.8f).withEyeHeight(0.7f);
 	}
 
 	@Override

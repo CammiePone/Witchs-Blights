@@ -6,6 +6,7 @@
 		"AreaEffectCloudEntityMixin",
 		"EnchantmentMixin",
 		"ItemEntityMixin",
+		"LandPathNodeMakerMixin",
 		"LivingEntityMixin",
 		"MilkBucketItemMixin",
 		"MobEntityMixin",

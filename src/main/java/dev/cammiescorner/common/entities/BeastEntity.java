@@ -229,6 +229,8 @@ public abstract class BeastEntity extends HostileEntity {
 	}
 
 	public boolean shouldSneak() {
+		if(!canChangeIntoPose(EntityPose.STANDING))
+			return true;
 		if(!horizontalCollision)
 			return false;
 
