@@ -61,8 +61,8 @@ public class VampireBeastEntity extends BeastEntity {
 			if(entry.hasKeyAndValue() && !entry.matchesKey(playerKey)) {
 				EntityType<?> type = entry.value();
 
-				if(LivingEntity.class.isAssignableFrom(type.getBaseClass()))
-					targetSelector.add(3, new ActiveTargetGoal(this, type.getBaseClass(), false));
+				if(type.create(getWorld()) instanceof LivingEntity target)
+					targetSelector.add(3, new ActiveTargetGoal(this, target.getClass(), false));
 			}
 		}));
 	}

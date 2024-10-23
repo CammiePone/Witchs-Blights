@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.cammiescorner.WitchsBlights;
 import dev.cammiescorner.api.Transformation;
 import dev.cammiescorner.common.components.TransformationComponent;
+import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.items.RosaryItem;
 import dev.cammiescorner.common.registries.*;
 import dev.cammiescorner.common.status_effects.CursedStatusEffect;
@@ -36,7 +37,31 @@ public abstract class LivingEntityMixin extends Entity {
 	@Shadow public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
 	@Shadow public abstract Collection<StatusEffectInstance> getStatusEffects();
 
+	@Shadow public abstract void remove(RemovalReason reason);
+
 	public LivingEntityMixin(EntityType<?> type, World world) { super(type, world); }
+
+	@Inject(method = "onStatusEffectApplied", at = @At("HEAD"))
+	private void convertNonPlayers(StatusEffectInstance effect, Entity source, CallbackInfo info) {
+		if(!(self instanceof PlayerEntity) && getType().isIn(ModTags.INFECTIBLE)) {
+			for(Transformation tf : WitchsBlights.TRANSFORMATIONS) {
+				if(tf.getCurse() == null)
+					continue;
+
+				if(tf.getCurse().value().getEffects().getFirst().getEffectType().equals(effect.getEffectType())) {
+					BeastEntity beast = tf.getBeast().create(getWorld());
+
+					if(beast != null) {
+						beast.refreshPositionAndAngles(getPos(), getYaw(), getPitch());
+						remove(RemovalReason.DISCARDED);
+						getWorld().spawnEntity(beast);
+					}
+
+					break;
+				}
+			}
+		}
+	}
 
 	@Inject(method = "onStatusEffectApplied", at = @At("HEAD"))
 	private void addTransformation(StatusEffectInstance effect, Entity source, CallbackInfo info) {
