@@ -24,9 +24,6 @@ public class VampireBeastEntityModel extends AnimalModel<VampireBeastEntity> imp
 	public final ModelPart rightLeg;
 	public final ModelPart leftLeg;
 
-	public BipedEntityModel.ArmPose leftArmPose = BipedEntityModel.ArmPose.EMPTY;
-	public BipedEntityModel.ArmPose rightArmPose = BipedEntityModel.ArmPose.EMPTY;
-
 	public boolean sneaking;
 	public boolean flying;
 	public boolean hunting;
