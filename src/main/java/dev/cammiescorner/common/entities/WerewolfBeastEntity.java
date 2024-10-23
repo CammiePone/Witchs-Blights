@@ -96,12 +96,12 @@ public class WerewolfBeastEntity extends BeastEntity {
 		super.tick();
 
 		if(!getWorld().isClient())
-			setClimbing(horizontalCollision && !isSneaking());
+			setClimbing(horizontalCollision && (!isSneaking() || canChangeIntoPose(EntityPose.STANDING)));
 	}
 
 	@Override
 	public boolean shouldSneak() {
-		return super.shouldSneak() || isHunting();
+		return (super.shouldSneak() || isHunting()) && !isClimbing();
 	}
 
 	@Override
