@@ -100,6 +100,11 @@ public class WerewolfBeastEntity extends BeastEntity {
 	}
 
 	@Override
+	public boolean shouldSneak() {
+		return super.shouldSneak() || isHunting();
+	}
+
+	@Override
 	public boolean isClimbing() {
 		return dataTracker.get(IS_CLIMBING);
 	}
