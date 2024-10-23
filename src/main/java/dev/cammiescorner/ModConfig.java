@@ -164,6 +164,14 @@ public class ModConfig {
 				translation = "witchsblights.config.vampireUrgingRange.name"
 		)
 		public static double vampireUrgingRange = 8;
+
+		@ConfigEntry(
+				type = EntryType.FLOAT,
+				id = "vampireSpreadCurseChance",
+				translation = "witchsblights.config.vampireSpreadCurseChance.name"
+		)
+		@ConfigOption.Range(min = 0f, max = 1f)
+		public static float vampireSpreadCurseChance = 0.25f;
 	}
 
 	@Category(value = "Werewolf")

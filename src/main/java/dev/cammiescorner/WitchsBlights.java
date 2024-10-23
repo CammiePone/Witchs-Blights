@@ -98,6 +98,9 @@ public class WitchsBlights implements MainEntryPoint {
 		});
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
+			if(entity.getRandom().nextFloat() >= ModConfig.VampireBeast.vampireSpreadCurseChance)
+				return;
+
 			Entity attacker = damageSource.getAttacker();
 
 			if(damageSource.isOf(ModDamageTypes.BLOOD_DRAINED) && attacker instanceof VampireBeastEntity)

@@ -69,6 +69,7 @@
 	"witchsblights.config.baseVampireStageUrgingModifier.name": "Vampire urging modifier for curse stage",
 	"witchsblights.config.baseVampireBabyUrgingModifier.name": "Vampire urging modifier if targeting baby",
 	"witchsblights.config.vampireUrgingRange.name": "Vampire urging range",
+	"witchsblights.config.vampireSpreadCurseChance.name": "Vampire spread curse chance on kill",
 	"witchsblights.config.baseWerewolfUrgingTicks.name": "Base werewolf urging timer",
 	"witchsblights.config.baseWerewolfStageUrgingModifier.name": "Werewolf urging modifier for curse stage",
 	"witchsblights.config.baseWerewolfBabyUrgingModifier.name": "Werewolf urging modifier if targeting baby",
