@@ -25,6 +25,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -119,6 +121,16 @@ public class WerewolfBeastEntity extends BeastEntity {
 			target.addStatusEffect(Utils.CURSED_CLAWS_I);
 			setTarget(null);
 		}
+	}
+
+	@Override
+	public boolean onKilledOther(ServerWorld world, LivingEntity other) {
+		ServerPlayerEntity owner = getOwner();
+
+		if(owner != null)
+			owner.getHungerManager().add((int) other.getMaxHealth(), 2f);
+
+		return super.onKilledOther(world, other);
 	}
 
 	@Override

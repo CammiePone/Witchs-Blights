@@ -8,6 +8,7 @@ import dev.cammiescorner.common.entities.BeastEntity;
 import dev.cammiescorner.common.items.RosaryItem;
 import dev.cammiescorner.common.registries.*;
 import dev.cammiescorner.common.status_effects.CursedStatusEffect;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -15,10 +16,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,6 +41,8 @@ public abstract class LivingEntityMixin extends Entity {
 	@Shadow public abstract Collection<StatusEffectInstance> getStatusEffects();
 
 	@Shadow public abstract void remove(RemovalReason reason);
+
+	@Shadow protected abstract void fall(double heightDifference, boolean onGround, BlockState state, BlockPos landedPosition);
 
 	public LivingEntityMixin(EntityType<?> type, World world) { super(type, world); }
 
@@ -91,6 +96,14 @@ public abstract class LivingEntityMixin extends Entity {
 			component.setTransformation(ModTransformations.NONE.get());
 			component.stopUrging();
 		}
+	}
+
+	@Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
+	private void werewolvesAreImmunteToHunger(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> info) {
+		TransformationComponent component = getComponent(ModComponents.TRANSFORMATION);
+
+		if(component.getTransformation() == ModTransformations.WEREWOLF.get() && effect.getEffectType() == StatusEffects.HUNGER)
+			info.setReturnValue(false);
 	}
 
 	@Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
