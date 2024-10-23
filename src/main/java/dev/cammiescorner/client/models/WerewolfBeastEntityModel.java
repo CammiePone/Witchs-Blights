@@ -188,15 +188,13 @@ public class WerewolfBeastEntityModel extends AnimalModel<WerewolfBeastEntity> i
 			neck.pivotZ = -8f;
 			body.pivotY = 12f;
 			body.pivotZ = 12f;
-			body.pitch = 1.6f;
+			body.pitch = 1.5f;
 			tail.pitch = 0.5f;
-			rightArm.pivotY = 13f;
-			rightArm.pivotZ = -6f;
-			rightArm.pitch -= 0.25f;
+			rightArm.pivotY = 10f;
+			rightArm.pitch += 0.25f;
 			rightArm.roll = 0.05f;
-			leftArm.pivotY = 13f;
-			leftArm.pivotZ = -6f;
-			leftArm.pitch -= 0.25f;
+			leftArm.pivotY = 10f;
+			leftArm.pitch += 0.25f;
 			leftArm.roll = -0.05f;
 			rightHand.pitch = -1.5f;
 			rightHand.yaw = -0.25f;
@@ -204,13 +202,13 @@ public class WerewolfBeastEntityModel extends AnimalModel<WerewolfBeastEntity> i
 			leftHand.pitch = -1.5f;
 			leftHand.yaw = 0.25f;
 			leftHand.roll = -1.5f;
-			rightLeg.pivotY = 11f;
-			rightLeg.pivotZ = 10f;
-			rightLeg.pitch += 0.5f;
+			rightLeg.pivotY = 8f;
+			rightLeg.pivotZ = 8f;
+			rightLeg.pitch += 0.25f;
 			rightLeg.roll = 0.1f;
-			leftLeg.pivotY = 11f;
-			leftLeg.pivotZ = 10f;
-			leftLeg.pitch += 0.5f;
+			leftLeg.pivotY = 8f;
+			leftLeg.pivotZ = 8f;
+			leftLeg.pitch += 0.25f;
 			leftLeg.roll = -0.1f;
 		}
 
