@@ -6,7 +6,6 @@ import dev.cammiescorner.witchsblights.api.Transformation;
 import dev.cammiescorner.witchsblights.common.components.TransformationComponent;
 import dev.cammiescorner.witchsblights.common.entities.BeastEntity;
 import dev.cammiescorner.witchsblights.common.items.RosaryItem;
-import dev.cammiescorner.common.registries.*;
 import dev.cammiescorner.witchsblights.common.registries.*;
 import dev.cammiescorner.witchsblights.common.status_effects.CursedStatusEffect;
 import net.minecraft.block.BlockState;
