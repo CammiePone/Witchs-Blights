@@ -17,7 +17,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"cardinal-components": [
-			"dev.cammiescorner.common.registries.ModComponents"
+			"dev.cammiescorner.witchsblights.common.registries.ModComponents"
 		]
 	},
 	"mixins": [
