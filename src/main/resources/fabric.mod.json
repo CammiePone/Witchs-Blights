@@ -10,9 +10,11 @@
 	],
 	"contact": {
 		"homepage": "https://cammiescorner.dev/",
-		"sources": "https://github.com/CammiePone/Witchs-Blight"
+		"discord": "https://cammiescorner.dev/discord",
+		"sources": "https://github.com/CammiePone/Witchs-Blights",
+		"issues": "https://github.com/CammiePone/Witchs-Blights/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "Cammie's Corner License",
 	"icon": "assets/witchsblights/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -32,7 +34,20 @@
 			"witchsblights:special_beast_movement",
 			"witchsblights:transformation",
 			"witchsblights:cure_curse"
-		]
+		],
+		"mc-publish": {
+			"curseforge": "1178752",
+			"modrinth": "x2vTEGlB",
+			"loaders": [
+				"fabric",
+				"quilt"
+			],
+			"dependencies": [
+				"cardinal-components-api(required){modrinth:K01OU20C}{curseforge:318449}",
+				"resourceful-config(required){modrinth:M1953qlQ}{curseforge:714059}",
+				"sparkweave(required){modrinth:nf68xfAw}{curseforge:911456}"
+			]
+		}
 	},
 	"depends": {
 		"fabricloader": ">=0.16.7",

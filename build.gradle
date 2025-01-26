@@ -3,12 +3,14 @@ plugins {
 	id 'maven-publish'
 }
 
-version = project.mod_version
-group = project.maven_group
+def ENV = System.getenv()
+def buildTime = ENV.BUILD_TIME ?: new Date().format('yyyyMMddHHmmss')
+boolean isPreviewBuild = !ENV.TAG || ENV.TAG.matches(".+-.+")
+def buildNumber = !ENV.TAG ? ("${ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : buildTime}") : ""
 
-base {
-	archivesName = project.archives_base_name
-}
+version = (ENV.TAG ?: "${project.minecraft_version}-development") + ((isPreviewBuild && !ENV.TAG) ? "+${buildNumber}" : "")
+group = project.maven_group
+archivesBaseName = project.archives_base_name
 
 repositories {
 	maven {
@@ -65,24 +67,35 @@ java {
 
 jar {
 	from("LICENSE.md") {
-		rename { "${it}_${project.base.archivesName.get()}"}
+		rename { "LICENSE_${archivesBaseName}.md" }
 	}
+
+	manifest.mainAttributes(
+			"Implementation-Title": project.archivesBaseName,
+			"Implementation-Version": project.version,
+			"Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}".toLowerCase(Locale.ROOT),
+			"Built-On-Minecraft": project.minecraft_version,
+			"Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
+	)
 }
 
-// configure the maven publication
 publishing {
 	publications {
-		create("mavenJava", MavenPublication) {
-			artifactId = project.archives_base_name
+		mavenJava(MavenPublication) {
+			artifactId "Witchs-Blights"
 			from components.java
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
+		if (ENV.MAVEN_UPLOAD_URL) {
+			maven {
+				url = ENV.MAVEN_UPLOAD_URL
+				credentials {
+					username = ENV.MAVEN_UPLOAD_USERNAME
+					password = ENV.MAVEN_UPLOAD_PASSWORD
+				}
+			}
+		}
 	}
 }
