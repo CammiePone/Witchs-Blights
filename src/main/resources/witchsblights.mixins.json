@@ -1,30 +1,30 @@
 {
 	"required": true,
-	"package": "dev.cammiescorner.mixin",
+	"package": "dev.cammiescorner.witchsblights.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"dev.cammiescorner.witchsblights.mixin.AreaEffectCloudEntityMixin",
-		"dev.cammiescorner.witchsblights.mixin.EnchantmentMixin",
-		"dev.cammiescorner.witchsblights.mixin.ItemEntityMixin",
-		"dev.cammiescorner.witchsblights.mixin.ItemMixin",
-		"dev.cammiescorner.witchsblights.mixin.LandPathNodeMakerMixin",
-		"dev.cammiescorner.witchsblights.mixin.LivingEntityMixin",
-		"dev.cammiescorner.witchsblights.mixin.MilkBucketItemMixin",
-		"dev.cammiescorner.witchsblights.mixin.MobEntityMixin",
-		"dev.cammiescorner.witchsblights.mixin.PlayerEntityMixin",
-		"dev.cammiescorner.witchsblights.mixin.PotionContentsComponentMixin",
-		"dev.cammiescorner.witchsblights.mixin.PotionEntityMixin",
-		"dev.cammiescorner.witchsblights.mixin.RaiderEntityMixin",
-		"dev.cammiescorner.witchsblights.mixin.ServerWorldMixin",
-		"dev.cammiescorner.witchsblights.mixin.StatusEffectUtilMixin"
+		"AreaEffectCloudEntityMixin",
+		"EnchantmentMixin",
+		"ItemEntityMixin",
+		"ItemMixin",
+		"LandPathNodeMakerMixin",
+		"LivingEntityMixin",
+		"MilkBucketItemMixin",
+		"MobEntityMixin",
+		"PlayerEntityMixin",
+		"PotionContentsComponentMixin",
+		"PotionEntityMixin",
+		"RaiderEntityMixin",
+		"ServerWorldMixin",
+		"StatusEffectUtilMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
 	},
 	"client": [
-		"dev.cammiescorner.witchsblights.mixin.client.HeldItemRendererMixin",
-		"dev.cammiescorner.witchsblights.mixin.client.InGameHudMixin",
-		"dev.cammiescorner.witchsblights.mixin.client.KeyBindingMixin",
-		"dev.cammiescorner.witchsblights.mixin.client.LivingEntityRendererMixin"
+		"client.HeldItemRendererMixin",
+		"client.InGameHudMixin",
+		"client.KeyBindingMixin",
+		"client.LivingEntityRendererMixin"
 	]
 }
