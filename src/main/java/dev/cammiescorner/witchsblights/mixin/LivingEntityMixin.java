@@ -39,9 +39,7 @@ public abstract class LivingEntityMixin extends Entity {
 
 	@Shadow public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
 	@Shadow public abstract Collection<StatusEffectInstance> getStatusEffects();
-
 	@Shadow public abstract void remove(RemovalReason reason);
-
 	@Shadow protected abstract void fall(double heightDifference, boolean onGround, BlockState state, BlockPos landedPosition);
 
 	public LivingEntityMixin(EntityType<?> type, World world) { super(type, world); }
@@ -99,11 +97,13 @@ public abstract class LivingEntityMixin extends Entity {
 	}
 
 	@Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
-	private void werewolvesAreImmunteToHunger(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> info) {
-		TransformationComponent component = getComponent(ModComponents.TRANSFORMATION);
+	private void werewolvesAreImmuneToHunger(StatusEffectInstance effect, CallbackInfoReturnable<Boolean> info) {
+		if(self instanceof PlayerEntity) {
+			TransformationComponent component = getComponent(ModComponents.TRANSFORMATION);
 
-		if(component.getTransformation() == ModTransformations.WEREWOLF.get() && effect.getEffectType() == StatusEffects.HUNGER)
-			info.setReturnValue(false);
+			if(component.getTransformation() == ModTransformations.WEREWOLF.get() && effect.getEffectType() == StatusEffects.HUNGER)
+				info.setReturnValue(false);
+		}
 	}
 
 	@Inject(method = "canHaveStatusEffect", at = @At("HEAD"), cancellable = true)
